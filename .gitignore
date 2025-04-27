@@ -4,3 +4,6 @@ node_modules
 
 .early.coverage
 prisma/generated
+demo
+src3
+logs
