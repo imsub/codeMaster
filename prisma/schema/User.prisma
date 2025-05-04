@@ -16,4 +16,5 @@ model User {
   problems      Problem[]
   submission    Submission[]
   problemSolved ProblemSolved[]
+  Playlist      Playlist[]
 }
