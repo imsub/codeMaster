@@ -1,50 +1,133 @@
+import Joi from 'joi';
+import { injectable, inject } from 'inversify';
+import { CustomError, LogDecorator } from '../utils';
+import { Request, Response, NextFunction } from 'express';
+import { url } from 'inspector';
+
+@injectable()
 export class AuthValidator {
-  private logger: any;
-  private Joi: any;
-  private CustomError: any;
+  constructor() {}
 
-  constructor(deps: { loggerService: any; Joi: any; CustomError: any }) {
-    this.logger = deps.loggerService;
-    this.Joi = deps.Joi;
-    this.CustomError = deps.CustomError;
-  }
-
-  private registerSchema() {
-    return this.Joi.object({
-      name: this.Joi.string().min(3).max(30).required(),
-      email: this.Joi.string().email().required(),
-      password: this.Joi.string().min(6).required(),
-    });
-  }
-
-  private loginSchema() {
-    return this.Joi.object({
-      email: this.Joi.string().email().required(),
-      password: this.Joi.string().required(),
-    });
-  }
-
-  validateRegister(data: {
-    name: string;
-    email: string;
-    password: string;
-  }): void {
-    const { error } = this.registerSchema().validate(data);
+  @LogDecorator.LogMethod()
+  validateRegister(req: Request, res: Response, next: NextFunction): void {
+    const { error } = Joi.object({
+      firstName: Joi.string().min(3).max(30).required(),
+      lastName: Joi.string().min(3).max(30).optional(),
+      middleName: Joi.string().min(3).max(30).optional(),
+      image: Joi.string().min(3).optional(),
+      avatar: Joi.object().optional(),
+      createdAt: Joi.date().timestamp().optional(),
+      temporaryPasswordExpiry: Joi.date().timestamp().optional(),
+      forgotPasswordExpiry: Joi.date().timestamp().optional(),
+      temporaryPassword: Joi.string().optional().default(null),
+      updatedAt: Joi.date().timestamp().optional(),
+      emailVerificationExpiry: Joi.date().timestamp().optional(),
+      refreshToken: Joi.string().optional().default(null),
+      emailVerificationToken: Joi.string().optional().default(null),
+      forgotPasswordToken: Joi.string().optional().default(null),
+      role: Joi.string().valid('ADMIN', 'USER').required().default('USER'),
+      email: Joi.string()
+        .email({ tlds: { allow: false } })
+        .required(),
+      password: Joi.string()
+        .min(8)
+        .required()
+        .pattern(
+          new RegExp(
+            '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$'
+          )
+        )
+        .message(
+          'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.'
+        ),
+    }).validate(req.body);
     if (error) {
-      this.logger.warn("Register validation failed", {
-        error: error.details[0].message,
-      });
-      throw new this.CustomError(error.details[0].message, 400);
+      throw new CustomError(error.details[0].message, 400);
     }
+    return next();
   }
-
-  validateLogin(data: { email: string; password: string }): void {
-    const { error } = this.loginSchema().validate(data);
+  @LogDecorator.LogMethod()
+  validateLogin(req: Request, res: Response, next: NextFunction): void {
+    const { error } = Joi.object({
+      email: Joi.string()
+        .email({ tlds: { allow: false } })
+        .required(),
+      password: Joi.string()
+        .min(8)
+        .required()
+        .pattern(
+          new RegExp(
+            '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$'
+          )
+        )
+        .message(
+          'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.'
+        ),
+    }).validate(req.body);
     if (error) {
-      this.logger.warn("Login validation failed", {
-        error: error.details[0].message,
-      });
-      throw new this.CustomError(error.details[0].message, 400);
+      throw new CustomError(error.details[0].message, 400);
     }
+    return next();
+  }
+  @LogDecorator.LogMethod()
+  validateLogout(req: Request, res: Response, next: NextFunction): void {
+    const { accessToken, refreshToken } = req.cookies;
+    const tokenSchema = Joi.object({
+      accessToken: Joi.string()
+        .pattern(/^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/)
+        .required()
+        .messages({
+          'string.pattern.base': 'Invalid access token format.',
+          'any.required': 'Access token is required.',
+        }),
+      refreshToken: Joi.string()
+        .pattern(/^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/)
+        .required()
+        .messages({
+          'string.pattern.base': 'Invalid refresh token format.',
+          'any.required': 'Refresh token is required.',
+        }),
+    });
+    const { error: tokenError } = tokenSchema.validate({
+      accessToken,
+      refreshToken,
+    });
+
+    if (tokenError) {
+      throw new CustomError(tokenError.details[0].message, 400);
+    }
+
+    const { error: bodyError } = Joi.object({
+      email: Joi.string()
+        .email({ tlds: { allow: false } })
+        .required()
+        .messages({
+          'string.email': 'Invalid email format.',
+          'any.required': 'Email is required.',
+        }),
+    }).validate(req.body);
+
+    if (bodyError) {
+      throw new CustomError(bodyError.details[0].message, 400);
+    }
+
+    return next();
+  }
+  @LogDecorator.LogMethod()
+  validateVerifyEmail(req: Request, res: Response, next: NextFunction): void {
+    const { token } = req.params ?? req.body;
+    const tokenSchema = Joi.object({
+      token: Joi.string().pattern(/^[0-9a-f]{40}$/i).required().messages({
+        'Invalid access token format.': 'Invalid access token format.',
+      }),
+    });
+    const { error: tokenError } = tokenSchema.validate({
+      token,
+    });
+    if (tokenError) {
+      throw new CustomError(tokenError.details[0].message, 400);
+    }
+
+    return next();
   }
 }

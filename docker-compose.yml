@@ -1,5 +1,4 @@
 version: '3.8'
-
 services:
   app:
     build: .
@@ -10,3 +9,15 @@ services:
       - /app/node_modules
     environment:
       NODE_ENV: development
+# services:
+#   redis:
+#     image: 'redis:latest'
+#     ports:
+#       - '6379:6379'
+#     environment:
+#       - REDIS_PASSWORD=your_password
+#     volumes:
+#       - redis_data:/data
+# volumes:
+#   redis_data:
+

@@ -1,29 +1,76 @@
-export class AuthMiddleware {
-  private logger: any;
-  private jwt: any;
-  private CustomError: any;
+import { injectable, inject } from 'inversify';
+import { Request, Response, NextFunction } from 'express';
 
-  constructor(deps: { loggerService: any; jwt: any; CustomError: any }) {
-    this.logger = deps.loggerService;
-    this.jwt = deps.jwt;
-    this.CustomError = deps.CustomError;
+declare global {
+  namespace Express {
+    interface Request {
+      user?: {
+        id: String;
+        role?: String;
+        email?: String;
+      };
+    }
+  }
+}
+import { TYPES } from '../types';
+import { AuthService } from '../services';
+//import { CustomError } from '../utils/errors';
+import jwt from 'jsonwebtoken';
+
+@injectable()
+export class AuthMiddleware {
+  constructor(
+    @inject(TYPES.AuthService) private authService: AuthService,
+  ) {
+    this.authService = authService;
   }
 
-  async validateToken(req: any, res: any, next: any): Promise<void> {
-    const token = req.headers.authorization?.split(" ")[1];
-    if (!token) {
-      this.logger.warn("No token provided", { path: req.path });
-      throw new this.CustomError("No token provided", 401);
-    }
+  authenticate(tokenType: String):any {
+    return async (
+      //tokenType: String,
+      req: Request,
+      res: Response,
+      next: NextFunction
+    ) => {
+      const token =
+        tokenType.toUpperCase() === 'ACCESS'
+          ? req.cookies.accessToken
+          : req.cookies.refreshToken;
+      const secret = process.env[`${tokenType.toUpperCase()}_TOKEN_SECRET`];
+      if (!secret)
+        return res.status(500).json({ error: 'Token secret not configured' });
 
-    try {
-      const decoded = this.jwt.verify(token, process.env.JWT_SECRET);
-      req.user = decoded;
-      this.logger.info("Token validated", { userId: decoded.id });
-      next();
-    } catch (error: any) {
-      this.logger.error("Invalid token", { error: error.message });
-      throw new this.CustomError("Invalid token", 401);
-    }
+      if (!token) return res.status(401).json({ error: 'Token missing' });
+      jwt.verify(
+        token,
+        secret,
+        async (err: jwt.VerifyErrors | null, decoded: any) => {
+          if (err) {
+            // Handle expired or invalid token
+            return res.status(401).json({ error: err.message });
+          }
+          const { id, role , email } = decoded as {
+            id: string;
+            role ?: string;
+            email?: string;
+          };
+          const response = await this.authService.getRecordByMultipleFields({
+            id,
+            ...(role  && { role  }),
+            ...(email && { email }),
+          });
+          if (!!response) {
+            req.user = {
+              id,
+              role: response.role,
+              email: response.email,
+            };
+            next();
+          } else {
+            return res.status(404).json({ error: 'Unauthoried' });
+          }
+        }
+      );
+    };
   }
 }

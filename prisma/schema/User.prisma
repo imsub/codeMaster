@@ -4,17 +4,27 @@ enum UserRole {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  name      String?
-  email     String   @unique
-  image     String?
-  role      UserRole @default(USER)
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  problems      Problem[]
-  submission    Submission[]
-  problemSolved ProblemSolved[]
-  Playlist      Playlist[]
+  id                      String          @id @default(uuid())
+  firstName               String
+  middleName              String?
+  lastName                String?
+  email                   String          @unique
+  image                   String?
+  role                    UserRole        @default(USER)
+  avatar                  Json?
+  password                String
+  createdAt               DateTime        @default(now())
+  updatedAt               DateTime        @updatedAt
+  refreshToken            String?
+  isEmailVerified         Boolean         @default(false)
+  emailVerificationToken  String?
+  emailVerificationExpiry DateTime?
+  forgotPasswordToken     String?
+  forgotPasswordExpiry    DateTime?
+  temporaryPassword       String?
+  temporaryPasswordExpiry DateTime?
+  problems                Problem[]
+  submission              Submission[]
+  problemSolved           ProblemSolved[]
+  Playlist                Playlist[]
 }
