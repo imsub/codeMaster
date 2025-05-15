@@ -25,10 +25,15 @@ export class BaseRepository<TModel, TCreateInput, TUpdateInput> {
   }
 
   async update(id: any, data: TUpdateInput): Promise<TModel> {
-    return this.modelDelegate.update({ where: { id }, data });
+    return this.modelDelegate.update({
+      where: { id },
+      data: {
+        ...data,
+      },
+    });
   }
 
-  async delete(id:any): Promise<TModel> {
+  async delete(id: any): Promise<TModel> {
     return this.modelDelegate.delete({ where: { id } });
   }
   async findFirst(
@@ -44,5 +49,3 @@ export class BaseRepository<TModel, TCreateInput, TUpdateInput> {
     return this.modelDelegate.createMany({ data });
   }
 }
-
-

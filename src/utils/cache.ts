@@ -10,7 +10,7 @@ export class CacheManager {
 
   constructor() {
     this.redis = new Redis(
-      process.env.REDIS_URL || 'redis://:authpassword@localhost:6379/0'
+      process.env.REDIS_URL || ''
     );
   }
 

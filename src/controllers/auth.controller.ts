@@ -7,7 +7,11 @@ import { CustomError } from '../utils/errors';
 import { LogDecorator } from '../utils/decorator';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
-import { sendEmail, emailVerificationMailgenContent } from '../utils';
+import {
+  sendEmail,
+  emailVerificationMailgenContent,
+  forgotPasswordMailgenContent,
+} from '../utils';
 /**
  * Controller class for authentication endpoints
  */
@@ -79,7 +83,7 @@ export class AuthController {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
+      maxAge: 1 * 24 * 60 * 60 * 1000, // 1 days in milliseconds
     });
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
@@ -166,6 +170,210 @@ export class AuthController {
       }
     } else {
       throw new CustomError('Invalid token', 401);
+    }
+  }
+  @LogDecorator.LogMethod()
+  async refreshToken(req: Request, res: Response) {
+    const { refreshToken } = req.cookies;
+    const {email:_email} = req.body;
+    const { email, role, id } = req.user || {};
+    if(_email !== email) {
+      throw new CustomError('Invalid token', 401);
+    }
+    const response = await this.authService.getRecordByMultipleFields({
+      email,
+      role,
+      id,
+    });
+    if (!!response) {
+      const accessToken = await this.authService.getToken({
+        tokenType: `access`,
+        id: response.id,
+        email: response.email,
+        role: response.role,
+      });
+      const _refreshToken = await this.authService.getToken({
+        tokenType: `refresh`,
+        id: response.id,
+        role: response.role,
+      });
+      res.cookie('accessToken', accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 1 * 24 * 60 * 60 * 1000, // 1 days in milliseconds
+      });
+      res.cookie('refreshToken', _refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
+      });
+      (res as any).sendResponse(
+        { email: response.email },
+        'Access token refreshed successfully',
+        200
+      );
+    } else {
+      throw new CustomError('Invalid token', 401);
+    }
+  }
+  @LogDecorator.LogMethod()
+  async forgotPassword(req: Request, res: Response) {
+    const { email } = req.body;
+    const _userInfo = await this.authService.getUserByEmail(email);
+    if (!_userInfo?.email) {
+      throw new CustomError('Incorrect Email.', 401);
+    }
+    const token = await this.generateTemporaryToken();
+    const forgotPasswordToken = token.hashedToken;
+    const forgotPasswordExpiry = token.tokenExpiry;
+    const result = await this.authService.updateUser({
+      id: _userInfo.id,
+      forgotPasswordToken,
+      forgotPasswordExpiry,
+    } as any);
+    if (!result) {
+      throw new CustomError('Password reset failed', 500);
+    }
+    const name =
+      _userInfo.lastName && _userInfo.middleName
+        ? `${_userInfo.firstName} ${_userInfo.middleName} ${_userInfo.lastName}`
+        : `${_userInfo.firstName} ${_userInfo.middleName || _userInfo.lastName}`;
+    const mailContent = forgotPasswordMailgenContent(
+      name,
+      `http://localhost:${process.env.PORT}/verifyForgotPassword/${token.unHashedToken}`
+    );
+    await sendEmail({
+      email: email,
+      subject: 'Reset Password',
+      mailgenContent: mailContent,
+    });
+
+    (res as any).sendResponse({ email }, 'Password reset link sent', 200);
+  }
+  @LogDecorator.LogMethod()
+  async verifyForgotPassword(req: Request, res: Response) {
+    const { token } = req.params; // unhashed token
+    const { password } = req.body;
+    const hashedPassword = await bcrypt.hash(
+      password,
+      Number(process.env.SALT_ROUNDS) || 5
+    );
+    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+    const response = await this.authService.getRecordByMultipleFields({
+      forgotPasswordToken: hashedToken,
+      forgotPasswordExpiry: {
+        gte: new Date(),
+      },
+      isEmailVerified: true,
+    });
+    if (!!response) { 
+      const result = await this.authService.updateUser({
+        id: response.id,
+        forgotPasswordToken: null,
+        forgotPasswordExpiry: null,
+        password: hashedPassword,
+      } as any);
+      if (!!result) {
+        (res as any).sendResponse(
+          { email: result.email },
+          'Password reset successfully',
+          200
+        );
+      } else {
+        throw new CustomError('Password reset failed', 500);
+      }
+    }
+    else {
+      throw new CustomError('Invalid token', 401);
+    }
+  }
+  @LogDecorator.LogMethod()
+  async resendEmailVerification(req: Request, res: Response){
+    const { email } = req.body;
+    const _userInfo = await this.authService.getRecordByMultipleFields({email, isEmailVerified: false});
+    if (!_userInfo?.email) {
+      throw new CustomError('Incorrect Email or Email already verified', 401);
+    }
+    const token = await this.generateTemporaryToken();
+    const emailVerificationToken = token.hashedToken;
+    const emailVerificationExpiry = token.tokenExpiry;
+    const result = await this.authService.updateUser({
+      id: _userInfo.id,
+      emailVerificationToken,
+      emailVerificationExpiry,
+    } as any);
+    if (!result) {
+      throw new CustomError('Email verification failed', 500);
+    }
+    const name =
+      _userInfo.lastName && _userInfo.middleName
+        ? `${_userInfo.firstName} ${_userInfo.middleName} ${_userInfo.lastName}`
+        : `${_userInfo.firstName} ${_userInfo.middleName || _userInfo.lastName}`;
+    const mailContent = emailVerificationMailgenContent(
+      name,
+      `http://localhost:${process.env.PORT}/verifyEmail/${token.unHashedToken}`
+    );
+    await sendEmail({
+      email: email,
+      subject: 'Verify Email',
+      mailgenContent: mailContent,
+    });
+
+    (res as any).sendResponse({ email }, 'Email verification link sent', 200);
+  }
+  @LogDecorator.LogMethod()
+  async changeCurrentPassword(req: Request, res: Response) {
+    const { currentPassword , newPassword } = req.body;
+    const { email, role, id } = req.user || {};
+    const response = await this.authService.getRecordByMultipleFields({
+      email,
+      role,
+      id,
+    });
+    if (!!response) {
+      const isPaswordCorrect = await bcrypt.compare(
+        currentPassword,
+        response.password
+      );
+      if (!isPaswordCorrect) throw new CustomError('Incorrect Password', 401);
+      const hashedPassword = await bcrypt.hash(
+        newPassword,
+        Number(process.env.SALT_ROUNDS) || 5
+      );
+      const result = await this.authService.updateUser({
+        id: response.id,
+        password: hashedPassword,
+      } as any);
+      if (!!result) {
+        (res as any).sendResponse(
+          { email: result.email },
+          'Password changed successfully',
+          200
+        );
+      } else {
+        throw new CustomError('Password change failed', 500);
+      }
+    }
+    else {
+      throw new CustomError('Invalid token', 401);
+    }
+  }
+  @LogDecorator.LogMethod()
+  async getProfile(req: Request, res: Response) {
+    const { id } = req.user || {};
+    const response = await this.authService.getRecordByMultipleFields({
+      id,
+    });
+    if (!!response) {
+      (res as any).sendResponse(
+        { email: response.email, role: response.role },
+        'User profile fetched successfully',
+        200
+      );
+    } else {
+      throw new CustomError('User not found', 404);
     }
   }
 }
