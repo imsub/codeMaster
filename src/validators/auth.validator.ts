@@ -2,7 +2,7 @@ import Joi from 'joi';
 import { injectable, inject } from 'inversify';
 import { CustomError, LogDecorator } from '../utils';
 import { Request, Response, NextFunction } from 'express';
-import { url } from 'inspector';
+
 
 @injectable()
 export class AuthValidator {

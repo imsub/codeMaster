@@ -19,13 +19,11 @@ import jwt from 'jsonwebtoken';
 
 @injectable()
 export class AuthMiddleware {
-  constructor(
-    @inject(TYPES.AuthService) private authService: AuthService,
-  ) {
+  constructor(@inject(TYPES.AuthService) private authService: AuthService) {
     this.authService = authService;
   }
 
-  authenticate(tokenType: String):any {
+  authenticate(tokenType: String): any {
     return async (
       //tokenType: String,
       req: Request,
@@ -49,14 +47,14 @@ export class AuthMiddleware {
             // Handle expired or invalid token
             return res.status(401).json({ error: err.message });
           }
-          const { id, role , email } = decoded as {
+          const { id, role, email } = decoded as {
             id: string;
-            role ?: string;
+            role?: string;
             email?: string;
           };
           const response = await this.authService.getRecordByMultipleFields({
             id,
-            ...(role  && { role  }),
+            ...(role && { role }),
             ...(email && { email }),
           });
           if (!!response) {
@@ -72,5 +70,19 @@ export class AuthMiddleware {
         }
       );
     };
+  }
+  checkAdmin(req: Request, res: Response, next: NextFunction):any {
+    if (req.user && req.user.role === 'ADMIN') {
+      next();
+    } else {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
+  }
+  checkUser(req: Request, res: Response, next: NextFunction):any {
+    if (req.user && req.user.role === 'USER') {
+      next();
+    } else {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
   }
 }

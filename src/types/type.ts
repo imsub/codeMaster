@@ -33,6 +33,9 @@ const TYPES = {
   DB: Symbol.for('DB'),
   CacheManager: Symbol.for('CacheManager'),
   ResponseMiddleware: Symbol.for('ResponseMiddleware'),
+  ProblemValidator: Symbol.for('ProblemValidator'),
+  ProblemRoutes: Symbol.for('ProblemRoutes'),
+  Judge0Service: Symbol.for('Judge0Service'),
 };
 export { TYPES };
 // export interface ILoggerService {

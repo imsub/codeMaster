@@ -1,47 +1,39 @@
-// import { injectable, inject } from 'inversify';
-// import { Router } from 'express';
-// import { TYPES } from '../../types';
-// import { ProblemController } from '../../controllers/problem.controller';
-// import { AsyncHandler } from '../../utils/asyncHandler';
-// import { AuthMiddleware } from '../../middlewares/auth.middleware';
-// import { RoleMiddleware } from '../../middlewares/role.middleware';
+import { injectable, inject } from 'inversify';
+import { Router } from 'express';
+import { TYPES } from '../types';
+import { CatchAsync } from '../utils/';
+import { AuthMiddleware } from '../middlewares/';
+import { ProblemController } from '../controllers';
+import { ProblemValidator } from '../validators';
 
-// /**
-//  * Class for defining problem routes
-//  */
-// @injectable()
-// export class ProblemRoutes {
-//   private router: Router;
+@injectable()
+export class ProblemRoutes {
+  private problemRouter: Router;
 
-//   constructor(
-//     @inject(TYPES.ProblemController)
-//     private problemController: ProblemController,
-//     @inject(TYPES.AuthMiddleware) private authMiddleware: AuthMiddleware,
-//     @inject(TYPES.RoleMiddleware) private roleMiddleware: RoleMiddleware,
-//     @inject(TYPES.AsyncHandler) private asyncHandler: AsyncHandler
-//   ) {
-//     this.router = Router();
-//     this.setupRoutes();
-//   }
+  constructor(
+    @inject(TYPES.ProblemController) private problemController: ProblemController,
+    @inject(TYPES.AuthMiddleware) private authMiddleware: AuthMiddleware,
+    @inject(TYPES.CatchAsync) private asyncHandler: CatchAsync,
+    @inject(TYPES.ProblemValidator) private problemValidator: ProblemValidator,
+  ) {
+    this.problemRouter = Router();
+    this.setupRoutes();
+  }
 
-//   private setupRoutes() {
-//     this.router.post(
-//       '/',
-//       this.authMiddleware.authenticate(),
-//       this.roleMiddleware.authorize(['ADMIN']),
-//       this.asyncHandler.handle(
-//         this.problemController.createProblem.bind(this.problemController)
-//       )
-//     );
-//     this.router.get(
-//       '/:id',
-//       this.asyncHandler.handle(
-//         this.problemController.getProblem.bind(this.problemController)
-//       )
-//     );
-//   }
+  private setupRoutes() {
+    this.problemRouter.post(
+      '/create-problem',
+      this.problemValidator.validateProblemInput,
+      this.authMiddleware.authenticate("ACCESS"),
+      this.authMiddleware.checkAdmin,
+      this.asyncHandler.handle(
+        this.problemController.createProblem.bind(this.problemController)
+      )
+    );
 
-//   getRouter(): Router {
-//     return this.router;
-//   }
-// }
+  }
+
+  getRouter(): Router {
+    return this.problemRouter;
+  }
+}

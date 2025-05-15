@@ -1,15 +1,9 @@
 import { injectable } from 'inversify';
 import { Request, Response, NextFunction } from 'express';
-//import { TYPES } from '../types';
-//import { CustomError } from '../utils/errors';
-// import winston from 'winston';
 
-/**
- * Middleware class for error handling
- */
 @injectable()
 export class ErrorMiddleware {
-  //constructor(@inject(TYPES.Logger) private logger: winston.Logger) {}
+
   constructor() {}
   handleError() {
     return (error: any, req: Request, res: Response, next: NextFunction) => {

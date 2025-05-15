@@ -1,43 +1,63 @@
-// import { injectable } from 'inversify';
-// import { z } from 'zod';
-// import { CustomError } from '../utils/errors';
+import { injectable, inject } from 'inversify';
+import Joi from 'joi';
+import { CustomError, LogDecorator } from '../utils';
+import { Request, Response, NextFunction } from 'express';
 
-// const problemSchema = z.object({
-//   title: z.string(),
-//   description: z.string(),
-//   difficulty: z.string(),
-//   tags: z.array(z.string()),
-//   examples: z.any(),
-//   constraints: z.string(),
-//   hints: z.string().optional(),
-//   editorial: z.string().optional(),
-//   testCases: z.any(),
-//   codeSnippets: z.any(),
-//   referenceSolutions: z.any(),
-// });
+/**
+ * Validator class for problem input
+ */
+@injectable()
+export class ProblemValidator {
+  @LogDecorator.LogMethod()
+  validateProblemInput(req: Request, res: Response, next: NextFunction): void {
+    // Optionally, add logging here if needed:
+    // LogDecorator.logMethodCall('validateProblemInput', req);
+    const schema = Joi.object({
+      title: Joi.string().min(1).required(),
+      description: Joi.string().min(1).required(),
+      difficulty: Joi.string().valid('EASY', 'MEDIUM', 'HARD').required(),
+      tags: Joi.array().items(Joi.string()).min(1).required(),
+      examples: Joi.object()
+        .pattern(
+          Joi.string().valid('PYTHON', 'JAVASCRIPT', 'JAVA'),
+          Joi.object({
+            input: Joi.string().required(),
+            output: Joi.string().required(),
+            explanation: Joi.string().required(),
+          })
+        )
+        .required(),
+      constraints: Joi.string().required(),
+      testcases: Joi.array()
+        .items(
+          Joi.object({
+            input: Joi.string().required(),
+            output: Joi.string().required(),
+          })
+        )
+        .min(1)
+        .required(),
 
-// /**
-//  * Validator class for problem input
-//  */
-// @injectable()
-// export class ProblemValidator {
-//   validateProblemInput(data: any): {
-//     title: string;
-//     description: string;
-//     difficulty: string;
-//     tags: string[];
-//     examples: any;
-//     constraints: string;
-//     hints?: string;
-//     editorial?: string;
-//     testCases: any;
-//     codeSnippets: any;
-//     referenceSolutions: any;
-//   } {
-//     try {
-//       return problemSchema.parse(data);
-//     } catch (error) {
-//       throw new CustomError('Invalid problem input', 400, error);
-//     }
-//   }
-// }
+      codeSnippets: Joi.object()
+        .pattern(
+          Joi.string().valid('PYTHON', 'JAVASCRIPT', 'JAVA'),
+          Joi.string()
+        )
+        .required(),
+      referenceSolutions: Joi.object()
+        .pattern(
+          Joi.string().valid('PYTHON', 'JAVASCRIPT', 'JAVA'),
+          Joi.string()
+        )
+        .required(),
+      hints: Joi.string().optional().allow(''),
+      editorial: Joi.string().optional().allow(''),
+    });
+
+    const { error } = schema.validate(req.body);
+    if (error) {
+      throw new CustomError(error.details[0].message, 400);
+    }
+    next();
+  }
+}
