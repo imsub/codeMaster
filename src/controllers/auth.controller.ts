@@ -55,7 +55,7 @@ export class AuthController {
       subject: 'Verify Email',
       mailgenContent: mailContent,
     });
-    (res as any).sendResponse(null, 'User created successfully', 201);
+    (res as Response).sendResponse(null, 'User created successfully', 201);
   }
 
   @LogDecorator.LogMethod()
@@ -92,7 +92,7 @@ export class AuthController {
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
     });
 
-    (res as any).sendResponse(
+    (res as Response).sendResponse(
       { id: _userInfo.id, email: _userInfo.email },
       'User created successfully',
       201
@@ -110,7 +110,7 @@ export class AuthController {
     if (!!response) {
       res.clearCookie('accessToken');
       res.clearCookie('refreshToken');
-      (res as any).sendResponse({ id, email }, 'Logged out successfully', 200);
+      (res as Response).sendResponse({ id, email }, 'Logged out successfully', 200);
     } else {
       throw new CustomError('Invalid token', 401);
     }
@@ -160,7 +160,7 @@ export class AuthController {
         isEmailVerified: true,
       } as any);
       if (!!result) {
-        (res as any).sendResponse(
+        (res as Response).sendResponse(
           { isEmailVerified: result.isEmailVerified, email: result.email },
           'Email verified successfully',
           200
@@ -209,7 +209,7 @@ export class AuthController {
         sameSite: 'strict',
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
       });
-      (res as any).sendResponse(
+      (res as Response).sendResponse(
         { email: response.email },
         'Access token refreshed successfully',
         200
@@ -250,7 +250,7 @@ export class AuthController {
       mailgenContent: mailContent,
     });
 
-    (res as any).sendResponse({ email }, 'Password reset link sent', 200);
+    (res as Response).sendResponse({ email }, 'Password reset link sent', 200);
   }
   @LogDecorator.LogMethod()
   async verifyForgotPassword(req: Request, res: Response) {
@@ -276,7 +276,7 @@ export class AuthController {
         password: hashedPassword,
       } as any);
       if (!!result) {
-        (res as any).sendResponse(
+        (res as Response).sendResponse(
           { email: result.email },
           'Password reset successfully',
           200
@@ -323,7 +323,7 @@ export class AuthController {
       mailgenContent: mailContent,
     });
 
-    (res as any).sendResponse({ email }, 'Email verification link sent', 200);
+    (res as Response).sendResponse({ email }, 'Email verification link sent', 200);
   }
   @LogDecorator.LogMethod()
   async changeCurrentPassword(req: Request, res: Response) {
@@ -349,7 +349,7 @@ export class AuthController {
         password: hashedPassword,
       } as any);
       if (!!result) {
-        (res as any).sendResponse(
+        (res as Response).sendResponse(
           { email: result.email },
           'Password changed successfully',
           200
@@ -368,7 +368,7 @@ export class AuthController {
       id,
     });
     if (!!response) {
-      (res as any).sendResponse(
+      (res as Response).sendResponse(
         { email: response.email, role: response.role },
         'User profile fetched successfully',
         200

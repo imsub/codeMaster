@@ -20,7 +20,10 @@ export class BaseRepository<TModel, TCreateInput, TUpdateInput> {
     return this.modelDelegate.findUnique({ where: { id } });
   }
 
-  async findAll(): Promise<TModel[]> {
+  async findAll(filter?:any): Promise<TModel[]> {
+    if (!!filter) {
+      return this.modelDelegate.findMany(filter);
+    }
     return this.modelDelegate.findMany();
   }
 

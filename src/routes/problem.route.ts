@@ -32,10 +32,59 @@ export class ProblemRoutes {
       this.authLimiter,
       this.problemValidator.validateProblemInput,
       this.authMiddleware.authenticate('ACCESS'),
+      this.authMiddleware.checkAdminRole,
       this.catchAsyncHandler.handle(
         this.problemController.createProblem.bind(this.problemController)
       )
     );
+    this.problemRouter.get(
+      '/getAllProblems',
+      this.authLimiter,
+      this.authMiddleware.authenticate('ACCESS'),
+      this.catchAsyncHandler.handle(
+        this.problemController.getAllProblems.bind(this.problemController)
+      )
+    );
+    this.problemRouter.get(
+      '/getProblemById/:id',
+      this.authLimiter,
+      this.problemValidator.validateProblemId,
+      this.authMiddleware.authenticate('ACCESS'),
+      this.catchAsyncHandler.handle(
+        this.problemController.getProblemById.bind(this.problemController)
+      )
+    );
+    this.problemRouter.put(
+      '/updateProblem/:id',
+      this.authLimiter,
+      this.problemValidator.validateProblemId,
+      this.problemValidator.validateProblemInput,
+      this.authMiddleware.authenticate('ACCESS'),
+      this.authMiddleware.checkAdminRole,
+      this.catchAsyncHandler.handle(
+        this.problemController.updateProblem.bind(this.problemController)
+      )
+    );
+    this.problemRouter.delete(
+      '/deleteProblem/:id',
+      this.authLimiter,
+      this.problemValidator.validateProblemId,
+      this.authMiddleware.authenticate('ACCESS'),
+      this.authMiddleware.checkAdminRole,
+      this.catchAsyncHandler.handle(
+        this.problemController.deleteProblem.bind(this.problemController)
+      )
+    );
+    // this.problemRouter.get(
+    //   '/getSolvedProblems',
+    //   this.authLimiter,
+    //   this.authMiddleware.authenticate('ACCESS'),
+    //   this.catchAsyncHandler.handle(
+    //     this.problemController.getAllProblemsSolvedByUser.bind(
+    //       this.problemController
+    //     )
+    //   )
+    // );
   }
 
   getRouter(): Router {

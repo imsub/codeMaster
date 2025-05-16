@@ -71,14 +71,14 @@ export class AuthMiddleware {
       );
     };
   }
-  checkAdmin(req: Request, res: Response, next: NextFunction): any {
+  checkAdminRole(req: Request, res: Response, next: NextFunction): any {
     if (req.user && req.user.role === 'ADMIN') {
       next();
     } else {
       return res.status(403).json({ error: 'Forbidden' });
     }
   }
-  checkUser(req: Request, res: Response, next: NextFunction): any {
+  checkUserRole(req: Request, res: Response, next: NextFunction): any {
     if (req.user && req.user.role === 'USER') {
       next();
     } else {

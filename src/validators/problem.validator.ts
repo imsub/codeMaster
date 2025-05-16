@@ -60,4 +60,15 @@ export class ProblemValidator {
     }
     next();
   }
+  @LogDecorator.LogMethod()
+  validateProblemId(req: Request, res: Response, next: NextFunction): void {
+    const schema = Joi.object({
+      id: Joi.string().min(1).required(),
+    });
+    const { error } = schema.validate(req.params);
+    if (error) {
+      throw new CustomError(error.details[0].message, 400);
+    }
+    next();
+  }
 }
