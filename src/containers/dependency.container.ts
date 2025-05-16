@@ -9,9 +9,26 @@ import { AuthRoutes } from '../routes/auth.route';
 import { ProblemRoutes } from '../routes/problem.route';
 import { SubmissionRoutes } from '../routes/submission.route';
 import { Router } from '../routes';
-import { AuthValidator, ProblemValidator , SubmissionValidator , JwtTokenValidator} from '../validators';
-import { UserRepository, ProblemRepository  , SubmissionRepository } from '../repositories';
-import { AuthController, ProblemController , SubmissionController } from '../controllers';
+import {
+  AuthValidator,
+  ProblemValidator,
+  SubmissionValidator,
+  JwtTokenValidator,
+} from '../validators';
+import {
+  UserRepository,
+  ProblemRepository,
+  SubmissionRepository,
+  PlaylistRepository,
+  ProblemInPlaylistRepository,
+  ProblemSolvedRepository,
+  TestCaseResultRepository,
+} from '../repositories';
+import {
+  AuthController,
+  ProblemController,
+  SubmissionController,
+} from '../controllers';
 import { CatchAsync, LoggerFactory, CacheManager } from '../utils';
 import { PrismaClient } from '../../prisma/generated/prisma/index.js';
 import {
@@ -19,7 +36,7 @@ import {
   AuthStrategy,
   ProblemService,
   Judge0Service,
-  SubmissionService
+  SubmissionService,
 } from '../services';
 import {
   IUserRepository,
@@ -38,7 +55,10 @@ const container = new Container();
 const prisma = new PrismaClient();
 container.bind<PrismaClient>(TYPES.PrismaClient).toConstantValue(prisma);
 container.bind<AuthRoutes>(TYPES.AuthRoutes).to(AuthRoutes).inSingletonScope();
-container.bind<SubmissionRoutes>(TYPES.SubmissionRoutes).to(SubmissionRoutes).inSingletonScope();
+container
+  .bind<SubmissionRoutes>(TYPES.SubmissionRoutes)
+  .to(SubmissionRoutes)
+  .inSingletonScope();
 container
   .bind<ProblemRoutes>(TYPES.ProblemRoutes)
   .to(ProblemRoutes)
@@ -68,6 +88,22 @@ container
 container
   .bind<ResponseMiddleware>(TYPES.ResponseMiddleware)
   .to(ResponseMiddleware)
+  .inSingletonScope();
+container
+  .bind<PlaylistRepository>(TYPES.PlaylistRepository)
+  .to(PlaylistRepository)
+  .inSingletonScope();
+container
+  .bind<ProblemInPlaylistRepository>(TYPES.ProblemInPlaylistRepository)
+  .to(ProblemInPlaylistRepository)
+  .inSingletonScope();
+container
+  .bind<ProblemSolvedRepository>(TYPES.ProblemSolvedRepository)
+  .to(ProblemSolvedRepository)
+  .inSingletonScope();
+container
+  .bind<TestCaseResultRepository>(TYPES.TestCaseResultRepository)
+  .to(TestCaseResultRepository)
   .inSingletonScope();
 
 // // Services

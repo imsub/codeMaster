@@ -2,19 +2,19 @@ import { injectable, inject } from 'inversify';
 import { TYPES } from '../types';
 import { BaseRepository } from './base.repository';
 import {
-  Submission,
+  ProblemInPlaylist,
   PrismaClient,
   Prisma,
 } from '../../prisma/generated/prisma/index.js';
 import { CustomError } from '../utils/errors';
 
 @injectable()
-export class SubmissionRepository extends BaseRepository<
-  Submission,
-  Prisma.SubmissionCreateInput,
-  Prisma.SubmissionUpdateInput
+export class ProblemInPlaylistRepository extends BaseRepository<
+  ProblemInPlaylist,
+  Prisma.ProblemInPlaylistCreateInput,
+  Prisma.ProblemInPlaylistUpdateInput
 > {
   constructor(@inject(TYPES.PrismaClient) private prismaClient: PrismaClient) {
-    super(prismaClient, prismaClient.submission);
+    super(prismaClient, prismaClient.problemInPlaylist);
   }
 }

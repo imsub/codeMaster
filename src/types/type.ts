@@ -42,6 +42,14 @@ const TYPES = {
   SubmissionController: Symbol.for('SubmissionController'),
   SubmissionService: Symbol.for('SubmissionService'),
   JwtTokenValidator: Symbol.for('JwtTokenValidator'),
+  PlaylistService: Symbol.for('PlaylistService'),
+  ExecuteCodeService: Symbol.for('ExecuteCodeService'),
+  PlaylistRoutes: Symbol.for('PlaylistRoutes'),
+  ExecuteCodeRoutes: Symbol.for('ExecuteCodeRoutes'),
+  PlaylistRepository: Symbol.for('PlaylistRepository'),
+  TestCaseResultRepository: Symbol.for('TestCaseResultRepository'),
+  ProblemSolvedRepository: Symbol.for('ProblemSolvedRepository'),
+  ProblemInPlaylistRepository: Symbol.for('ProblemInPlaylistRepository'),
 };
 export { TYPES };
 // export interface ILoggerService {
