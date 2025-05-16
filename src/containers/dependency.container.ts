@@ -7,10 +7,11 @@ import {
 } from '../middlewares';
 import { AuthRoutes } from '../routes/auth.route';
 import { ProblemRoutes } from '../routes/problem.route';
+import { SubmissionRoutes } from '../routes/submission.route';
 import { Router } from '../routes';
-import { AuthValidator, ProblemValidator } from '../validators';
-import { UserRepository, ProblemRepository } from '../repositories';
-import { AuthController, ProblemController } from '../controllers';
+import { AuthValidator, ProblemValidator , SubmissionValidator , JwtTokenValidator} from '../validators';
+import { UserRepository, ProblemRepository  , SubmissionRepository } from '../repositories';
+import { AuthController, ProblemController , SubmissionController } from '../controllers';
 import { CatchAsync, LoggerFactory, CacheManager } from '../utils';
 import { PrismaClient } from '../../prisma/generated/prisma/index.js';
 import {
@@ -18,6 +19,7 @@ import {
   AuthStrategy,
   ProblemService,
   Judge0Service,
+  SubmissionService
 } from '../services';
 import {
   IUserRepository,
@@ -36,6 +38,7 @@ const container = new Container();
 const prisma = new PrismaClient();
 container.bind<PrismaClient>(TYPES.PrismaClient).toConstantValue(prisma);
 container.bind<AuthRoutes>(TYPES.AuthRoutes).to(AuthRoutes).inSingletonScope();
+container.bind<SubmissionRoutes>(TYPES.SubmissionRoutes).to(SubmissionRoutes).inSingletonScope();
 container
   .bind<ProblemRoutes>(TYPES.ProblemRoutes)
   .to(ProblemRoutes)
@@ -55,6 +58,10 @@ container
   .to(ProblemRepository)
   .inSingletonScope();
 container
+  .bind<SubmissionRepository>(TYPES.SubmissionRepository)
+  .to(SubmissionRepository)
+  .inSingletonScope();
+container
   .bind<CacheManager>(TYPES.CacheManager)
   .to(CacheManager)
   .inSingletonScope();
@@ -64,10 +71,14 @@ container
   .inSingletonScope();
 
 // // Services
-// container.bind<IUserService>(TYPES.UserService).to(UserService).inSingletonScope();
+
 container
   .bind<AuthService>(TYPES.AuthService)
   .to(AuthService)
+  .inSingletonScope();
+container
+  .bind<SubmissionService>(TYPES.SubmissionService)
+  .to(SubmissionService)
   .inSingletonScope();
 container
   .bind<ProblemService>(TYPES.ProblemService)
@@ -77,19 +88,21 @@ container
   .bind<Judge0Service>(TYPES.Judge0Service)
   .to(Judge0Service)
   .inSingletonScope();
-// container.bind<IProblemService>(TYPES.ProblemService).to(ProblemService).inSingletonScope();
 
-// // Authentication Strategy
 container
   .bind<IAuthStrategy>(TYPES.AuthStrategy)
   .to(AuthStrategy)
   .inSingletonScope();
 
 // // Controllers
-// container.bind<UserController>(TYPES.UserController).to(UserController).inSingletonScope();
+
 container
   .bind<AuthController>(TYPES.AuthController)
   .to(AuthController)
+  .inSingletonScope();
+container
+  .bind<SubmissionController>(TYPES.SubmissionController)
+  .to(SubmissionController)
   .inSingletonScope();
 container
   .bind<ProblemController>(TYPES.ProblemController)
@@ -102,6 +115,14 @@ container
 container
   .bind<ProblemValidator>(TYPES.ProblemValidator)
   .to(ProblemValidator)
+  .inSingletonScope();
+container
+  .bind<SubmissionValidator>(TYPES.SubmissionValidator)
+  .to(SubmissionValidator)
+  .inSingletonScope();
+container
+  .bind<JwtTokenValidator>(TYPES.JwtTokenValidator)
+  .to(JwtTokenValidator)
   .inSingletonScope();
 // container
 

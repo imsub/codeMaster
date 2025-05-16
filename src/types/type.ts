@@ -36,6 +36,12 @@ const TYPES = {
   ProblemValidator: Symbol.for('ProblemValidator'),
   ProblemRoutes: Symbol.for('ProblemRoutes'),
   Judge0Service: Symbol.for('Judge0Service'),
+  SubmissionRoutes: Symbol.for('SubmissionRoutes'),
+  SubmissionValidator: Symbol.for('SubmissionValidator'),
+  SubmissionRepository: Symbol.for('SubmissionRepository'),
+  SubmissionController: Symbol.for('SubmissionController'),
+  SubmissionService: Symbol.for('SubmissionService'),
+  JwtTokenValidator: Symbol.for('JwtTokenValidator'),
 };
 export { TYPES };
 // export interface ILoggerService {

@@ -20,7 +20,7 @@ export class BaseRepository<TModel, TCreateInput, TUpdateInput> {
     return this.modelDelegate.findUnique({ where: { id } });
   }
 
-  async findAll(filter?:any): Promise<TModel[]> {
+  async findAll(filter?: any): Promise<TModel[]> {
     if (!!filter) {
       return this.modelDelegate.findMany(filter);
     }
@@ -50,5 +50,15 @@ export class BaseRepository<TModel, TCreateInput, TUpdateInput> {
   }
   async batchCreate(data: TCreateInput[]): Promise<{ count: number }> {
     return this.modelDelegate.createMany({ data });
+  }
+
+  async count(
+    where?: Prisma.UserWhereInput | Prisma.UserSelect | any,
+    select?: Prisma.UserSelect
+  ): Promise<number> {
+    return await this.modelDelegate.count({
+      where,
+      select,
+    });
   }
 }

@@ -5,7 +5,7 @@ import { AuthController } from '../controllers';
 import { CatchAsync } from '../utils';
 import { AuthMiddleware } from '../middlewares';
 import rateLimit from 'express-rate-limit';
-import { AuthValidator } from '../validators';
+import { AuthValidator , JwtTokenValidator } from '../validators';
 
 @injectable()
 export class AuthRoutes {
@@ -19,7 +19,8 @@ export class AuthRoutes {
     @inject(TYPES.AuthController) private authController: AuthController,
     @inject(TYPES.AuthMiddleware) private authMiddleware: AuthMiddleware,
     @inject(TYPES.CatchAsync) private catchAsyncHandler: CatchAsync,
-    @inject(TYPES.AuthValidator) private authValidator: AuthValidator
+    @inject(TYPES.AuthValidator) private authValidator: AuthValidator,
+    @inject(TYPES.JwtTokenValidator) private jwtValidator: JwtTokenValidator,
   ) {
     this.authRouter = Router();
     this.setupRoutes();
@@ -45,6 +46,7 @@ export class AuthRoutes {
     this.authRouter.get(
       '/logout',
       this.authLimiter,
+      this.jwtValidator.validateJwtToken,
       this.authValidator.validateLogout,
       this.authMiddleware.authenticate('ACCESS'),
       this.catchAsyncHandler.handle(
@@ -88,6 +90,7 @@ export class AuthRoutes {
     this.authRouter.get(
       '/resendEmailVerification',
       this.authLimiter,
+      this.jwtValidator.validateJwtToken,
       this.authValidator.validateResendEmailVerification,
       this.authMiddleware.authenticate('ACCESS'),
       this.catchAsyncHandler.handle(
@@ -97,6 +100,7 @@ export class AuthRoutes {
     this.authRouter.patch(
       '/changeCurrentPassword',
       this.authLimiter,
+      this.jwtValidator.validateJwtToken,
       this.authValidator.validateChangeCurrentPassword,
       this.authMiddleware.authenticate('ACCESS'),
       this.catchAsyncHandler.handle(
@@ -106,6 +110,7 @@ export class AuthRoutes {
     this.authRouter.get(
       '/profile',
       this.authLimiter,
+      this.jwtValidator.validateJwtToken,
       this.authMiddleware.authenticate('ACCESS'),
       this.catchAsyncHandler.handle(
         this.authController.getProfile.bind(this.authController)

@@ -10,8 +10,7 @@ import { Request, Response, NextFunction } from 'express';
 export class ProblemValidator {
   @LogDecorator.LogMethod()
   validateProblemInput(req: Request, res: Response, next: NextFunction): void {
-    // Optionally, add logging here if needed:
-    // LogDecorator.logMethodCall('validateProblemInput', req);
+
     const schema = Joi.object({
       title: Joi.string().min(1).required(),
       description: Joi.string().min(1).required(),
@@ -63,7 +62,7 @@ export class ProblemValidator {
   @LogDecorator.LogMethod()
   validateProblemId(req: Request, res: Response, next: NextFunction): void {
     const schema = Joi.object({
-      id: Joi.string().min(1).required(),
+      id: Joi.string().uuid({ version: 'uuidv4' }).required(),
     });
     const { error } = schema.validate(req.params);
     if (error) {

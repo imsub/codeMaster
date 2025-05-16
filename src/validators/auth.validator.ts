@@ -70,32 +70,6 @@ export class AuthValidator {
   }
   @LogDecorator.LogMethod()
   validateLogout(req: Request, res: Response, next: NextFunction): void {
-    const { accessToken, refreshToken } = req.cookies;
-    const tokenSchema = Joi.object({
-      accessToken: Joi.string()
-        .pattern(/^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/)
-        .required()
-        .messages({
-          'string.pattern.base': 'Invalid access token format.',
-          'any.required': 'Access token is required.',
-        }),
-      refreshToken: Joi.string()
-        .pattern(/^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/)
-        .required()
-        .messages({
-          'string.pattern.base': 'Invalid refresh token format.',
-          'any.required': 'Refresh token is required.',
-        }),
-    });
-    const { error: tokenError } = tokenSchema.validate({
-      accessToken,
-      refreshToken,
-    });
-
-    if (tokenError) {
-      throw new CustomError(tokenError.details[0].message, 400);
-    }
-
     const { error: bodyError } = Joi.object({
       email: Joi.string()
         .email({ tlds: { allow: false } })
@@ -219,32 +193,6 @@ export class AuthValidator {
     res: Response,
     next: NextFunction
   ): void {
-    const { accessToken, refreshToken } = req.cookies;
-    const tokenSchema = Joi.object({
-      accessToken: Joi.string()
-        .pattern(/^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/)
-        .required()
-        .messages({
-          'string.pattern.base': 'Invalid access token format.',
-          'any.required': 'Access token is required.',
-        }),
-      refreshToken: Joi.string()
-        .pattern(/^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/)
-        .required()
-        .messages({
-          'string.pattern.base': 'Invalid refresh token format.',
-          'any.required': 'Refresh token is required.',
-        }),
-    });
-    const { error: tokenError } = tokenSchema.validate({
-      accessToken,
-      refreshToken,
-    });
-
-    if (tokenError) {
-      throw new CustomError(tokenError.details[0].message, 400);
-    }
-
     const { error } = Joi.object({
       email: Joi.string()
         .email({ tlds: { allow: false } })
@@ -261,31 +209,7 @@ export class AuthValidator {
     res: Response,
     next: NextFunction
   ): void {
-    const { accessToken, refreshToken } = req.cookies;
-    const tokenSchema = Joi.object({
-      accessToken: Joi.string()
-        .pattern(/^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/)
-        .required()
-        .messages({
-          'string.pattern.base': 'Invalid access token format.',
-          'any.required': 'Access token is required.',
-        }),
-      refreshToken: Joi.string()
-        .pattern(/^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/)
-        .required()
-        .messages({
-          'string.pattern.base': 'Invalid refresh token format.',
-          'any.required': 'Refresh token is required.',
-        }),
-    });
-    const { error: tokenError } = tokenSchema.validate({
-      accessToken,
-      refreshToken,
-    });
-
-    if (tokenError) {
-      throw new CustomError(tokenError.details[0].message, 400);
-    }
+    
     const { error } = Joi.object({
       currentPassword: Joi.string()
         .min(8)
