@@ -1,17 +1,21 @@
-import Mailgen from "mailgen";
-import nodemailer from "nodemailer";
+import Mailgen from 'mailgen';
+import nodemailer from 'nodemailer';
 
 /**
  *
  * @param {{email: string; subject: string; mailgenContent: Mailgen.Content; }} options
  */
-const sendEmail = async (options:{email: string; subject: string; mailgenContent: Mailgen.Content; }):Promise<void> => {
+const sendEmail = async (options: {
+  email: string;
+  subject: string;
+  mailgenContent: Mailgen.Content;
+}): Promise<void> => {
   // Initialize mailgen instance with default theme and brand configuration
   const mailGenerator = new Mailgen({
-    theme: "default",
+    theme: 'default',
     product: {
-      name: "Task Manager",
-      link: "https://taskmanager.app",
+      name: 'Task Manager',
+      link: 'https://taskmanager.app',
     },
   });
 
@@ -43,9 +47,9 @@ const sendEmail = async (options:{email: string; subject: string; mailgenContent
     // As sending email is not strongly coupled to the business logic it is not worth to raise an error when email sending fails
     // So it's better to fail silently rather than breaking the app
     console.error(
-      "Email service failed silently. Make sure you have provided your MAILTRAP credentials in the .env file",
+      'Email service failed silently. Make sure you have provided your MAILTRAP credentials in the .env file'
     );
-    console.error("Error: ", error);
+    console.error('Error: ', error);
   }
 };
 
@@ -56,17 +60,20 @@ const sendEmail = async (options:{email: string; subject: string; mailgenContent
  * @returns {Mailgen.Content}
  * @description It designs the email verification mail
  */
-const emailVerificationMailgenContent = (username:string, verificationUrl:string):any => {
+const emailVerificationMailgenContent = (
+  username: string,
+  verificationUrl: string
+): any => {
   return {
     body: {
       name: username,
       intro: "Welcome to our app! We're very excited to have you on board.",
       action: {
         instructions:
-          "To verify your email please click on the following button:",
+          'To verify your email please click on the following button:',
         button: {
-          color: "#22BC66", // Optional action button color
-          text: "Verify your email",
+          color: '#22BC66', // Optional action button color
+          text: 'Verify your email',
           link: verificationUrl,
         },
       },
@@ -83,17 +90,20 @@ const emailVerificationMailgenContent = (username:string, verificationUrl:string
  * @returns {Mailgen.Content}
  * @description It designs the forgot password mail
  */
-const forgotPasswordMailgenContent = (username:string, passwordResetUrl:string):any => {
+const forgotPasswordMailgenContent = (
+  username: string,
+  passwordResetUrl: string
+): any => {
   return {
     body: {
       name: username,
-      intro: "We got a request to reset the password of our account",
+      intro: 'We got a request to reset the password of our account',
       action: {
         instructions:
-          "To reset your password click on the following button or link:",
+          'To reset your password click on the following button or link:',
         button: {
-          color: "#22BC66", // Optional action button color
-          text: "Reset password",
+          color: '#22BC66', // Optional action button color
+          text: 'Reset password',
           link: passwordResetUrl,
         },
       },

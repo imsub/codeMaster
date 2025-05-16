@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 //import { PrismaClient } from '../prisma/generated/prisma/index.js';
 import winston from 'winston';
 import cookieParser from 'cookie-parser';
@@ -34,6 +35,7 @@ export class App {
   }
 
   private setupMiddleware() {
+    //this.app.use(cors());
     this.app.use(helmet());
     this.app.use(express.json());
     this.app.use(cookieParser());
@@ -43,6 +45,10 @@ export class App {
         etag: false, // Disable ETag header if not needed
       })
     );
+    // this.app.use((req, res, next) => {
+    //   console.log(`[${req.method}] ${req.originalUrl}`);
+    //   next();
+    // });
   }
 
   private setupRoutes() {

@@ -31,7 +31,6 @@ export class AuthService {
     email?: string;
     tokenType: string;
   }): Promise<string | null> {
-  
     //const token = await this.cacheManager.getCache(`${user.tokenType} Token:${user.id}`) || this.authStrategy.generateToken(user);
     const token = this.authStrategy.generateToken(user);
     //await this.cacheManager.setCache(`${user.tokenType} Token:${user.id}`, token, 3600);
@@ -41,8 +40,12 @@ export class AuthService {
     return token;
   }
   async createUser(data: any): Promise<User> {
-    const result:User = await this.userRepository.create(data);
-    await this.cacheManager.setCache(`User:${result.id}`, JSON.stringify(result), 3600);
+    const result: User = await this.userRepository.create(data);
+    await this.cacheManager.setCache(
+      `User:${result.id}`,
+      JSON.stringify(result),
+      3600
+    );
     return result;
   }
 
@@ -53,13 +56,13 @@ export class AuthService {
     const user = await this.userRepository.findByEmail(email);
     return !!user;
   }
-async getRecordByMultipleFields(
-  where?: any,
-  select?: any
-): Promise<User | null> {
-  const user = await this.userRepository.findFirst(where, select);
-  return user;
-}
+  async getRecordByMultipleFields(
+    where?: any,
+    select?: any
+  ): Promise<User | null> {
+    const user = await this.userRepository.findFirst(where, select);
+    return user;
+  }
   // async register(
   //   email: string,
   //   password: string,
@@ -103,7 +106,7 @@ async getRecordByMultipleFields(
           expiresAt: new Date(Date.now() + 3600 * 1000),
         },
       });
-      await this.prisma.$transaction(async (tx:any) => {
+      await this.prisma.$transaction(async (tx: any) => {
         await tx.tokenBlacklist.create({
           data: { token, expiresAt: new Date(Date.now() + 3600 * 1000) },
         });
@@ -113,7 +116,7 @@ async getRecordByMultipleFields(
       throw new CustomError('Failed to blacklist token', 500, error);
     }
   }
-  async updateUser(data:User): Promise<User> {
+  async updateUser(data: User): Promise<User> {
     const user = await this.userRepository.findById(data.id);
     if (!user) {
       throw new CustomError('User not found', 404);
@@ -226,7 +229,6 @@ async getRecordByMultipleFields(
   //   }
   //   return updatedUser;
   // }
-     
 
   // async refreshToken(token: string): Promise<string> {
   //   const cached = await this.cacheManager.getCache(`blacklist:${token}`);

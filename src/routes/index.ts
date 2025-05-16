@@ -1,4 +1,3 @@
-// export * from './auth.route.ts';
 import express from 'express';
 import { AuthRoutes } from './auth.route';
 import { ProblemRoutes } from './problem.route';

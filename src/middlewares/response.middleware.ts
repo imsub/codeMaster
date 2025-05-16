@@ -15,7 +15,11 @@ export class ResponseMiddleware {
 
   sendResponse() {
     return (req: Request, res: Response, next: NextFunction) => {
-      res.sendResponse = function (data, message = 'Success', statusCode = 200) {
+      res.sendResponse = function (
+        data,
+        message = 'Success',
+        statusCode = 200
+      ) {
         if (
           !Number.isInteger(statusCode) ||
           statusCode < 100 ||

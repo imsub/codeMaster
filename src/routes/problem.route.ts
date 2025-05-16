@@ -5,16 +5,22 @@ import { CatchAsync } from '../utils/';
 import { AuthMiddleware } from '../middlewares/';
 import { ProblemController } from '../controllers';
 import { ProblemValidator } from '../validators';
+import rateLimit from 'express-rate-limit';
 
 @injectable()
 export class ProblemRoutes {
   private problemRouter: Router;
+  private authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 requests per windowMs
+  });
 
   constructor(
-    @inject(TYPES.ProblemController) private problemController: ProblemController,
     @inject(TYPES.AuthMiddleware) private authMiddleware: AuthMiddleware,
-    @inject(TYPES.CatchAsync) private asyncHandler: CatchAsync,
-    @inject(TYPES.ProblemValidator) private problemValidator: ProblemValidator,
+    @inject(TYPES.CatchAsync) private catchAsyncHandler: CatchAsync,
+    @inject(TYPES.ProblemController)
+    private problemController: ProblemController,
+    @inject(TYPES.ProblemValidator) private problemValidator: ProblemValidator
   ) {
     this.problemRouter = Router();
     this.setupRoutes();
@@ -22,15 +28,14 @@ export class ProblemRoutes {
 
   private setupRoutes() {
     this.problemRouter.post(
-      '/create-problem',
+      '/createProblem',
+      this.authLimiter,
       this.problemValidator.validateProblemInput,
-      this.authMiddleware.authenticate("ACCESS"),
-      this.authMiddleware.checkAdmin,
-      this.asyncHandler.handle(
+      this.authMiddleware.authenticate('ACCESS'),
+      this.catchAsyncHandler.handle(
         this.problemController.createProblem.bind(this.problemController)
       )
     );
-
   }
 
   getRouter(): Router {

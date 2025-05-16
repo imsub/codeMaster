@@ -3,7 +3,6 @@ import { Request, Response, NextFunction } from 'express';
 
 @injectable()
 export class ErrorMiddleware {
-
   constructor() {}
   handleError() {
     return (error: any, req: Request, res: Response, next: NextFunction) => {

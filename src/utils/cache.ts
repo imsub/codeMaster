@@ -9,9 +9,7 @@ export class CacheManager {
   private redis: Redis;
 
   constructor() {
-    this.redis = new Redis(
-      process.env.REDIS_URL || ''
-    );
+    this.redis = new Redis(process.env.REDIS_URL || '');
   }
 
   async getCache(key: string): Promise<string | null> {

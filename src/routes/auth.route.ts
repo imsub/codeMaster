@@ -1,15 +1,15 @@
 import { injectable, inject } from 'inversify';
 import { Router } from 'express';
 import { TYPES } from '../types/index';
-import { AuthController } from '../controllers/index';
-import { CatchAsync } from '../utils/index';
-import { AuthMiddleware } from '../middlewares/index';
+import { AuthController } from '../controllers';
+import { CatchAsync } from '../utils';
+import { AuthMiddleware } from '../middlewares';
 import rateLimit from 'express-rate-limit';
 import { AuthValidator } from '../validators';
 
 @injectable()
 export class AuthRoutes {
-  private router: Router;
+  private authRouter: Router;
   private authLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 100, // Limit each IP to 100 requests per windowMs
@@ -21,12 +21,12 @@ export class AuthRoutes {
     @inject(TYPES.CatchAsync) private catchAsyncHandler: CatchAsync,
     @inject(TYPES.AuthValidator) private authValidator: AuthValidator
   ) {
-    this.router = Router();
+    this.authRouter = Router();
     this.setupRoutes();
   }
 
-  private async setupRoutes() {
-    this.router.post(
+  private setupRoutes() {
+    this.authRouter.post(
       '/register',
       this.authLimiter,
       this.authValidator.validateRegister,
@@ -34,7 +34,7 @@ export class AuthRoutes {
         this.authController.register.bind(this.authController)
       )
     );
-    this.router.get(
+    this.authRouter.get(
       '/login',
       this.authLimiter,
       this.authValidator.validateLogin,
@@ -42,7 +42,7 @@ export class AuthRoutes {
         this.authController.login.bind(this.authController)
       )
     );
-    this.router.get(
+    this.authRouter.get(
       '/logout',
       this.authLimiter,
       this.authValidator.validateLogout,
@@ -52,7 +52,7 @@ export class AuthRoutes {
       )
     );
 
-    this.router.get(
+    this.authRouter.get(
       '/refreshToken',
       this.authLimiter,
       this.authValidator.validateRefreshToken,
@@ -61,7 +61,7 @@ export class AuthRoutes {
         this.authController.refreshToken.bind(this.authController)
       )
     );
-    this.router.post(
+    this.authRouter.post(
       '/forgotPassword',
       this.authLimiter,
       this.authValidator.validateForgotPassword,
@@ -69,7 +69,7 @@ export class AuthRoutes {
         this.authController.forgotPassword.bind(this.authController)
       )
     );
-    this.router.patch(
+    this.authRouter.patch(
       '/verifyForgotPassword/:token',
       this.authLimiter,
       this.authValidator.validateResetPassword,
@@ -77,7 +77,7 @@ export class AuthRoutes {
         this.authController.verifyForgotPassword.bind(this.authController)
       )
     );
-    this.router.post(
+    this.authRouter.post(
       '/verifyEmail/:token',
       this.authLimiter,
       this.authValidator.validateVerifyEmail,
@@ -85,7 +85,7 @@ export class AuthRoutes {
         this.authController.verifyTemporaryToken.bind(this.authController)
       )
     );
-    this.router.get(
+    this.authRouter.get(
       '/resendEmailVerification',
       this.authLimiter,
       this.authValidator.validateResendEmailVerification,
@@ -94,7 +94,7 @@ export class AuthRoutes {
         this.authController.resendEmailVerification.bind(this.authController)
       )
     );
-    this.router.patch(
+    this.authRouter.patch(
       '/changeCurrentPassword',
       this.authLimiter,
       this.authValidator.validateChangeCurrentPassword,
@@ -103,7 +103,7 @@ export class AuthRoutes {
         this.authController.changeCurrentPassword.bind(this.authController)
       )
     );
-    this.router.get(
+    this.authRouter.get(
       '/profile',
       this.authLimiter,
       this.authMiddleware.authenticate('ACCESS'),
@@ -111,10 +111,9 @@ export class AuthRoutes {
         this.authController.getProfile.bind(this.authController)
       )
     );
-
   }
 
   getRouter(): Router {
-    return this.router;
+    return this.authRouter;
   }
 }

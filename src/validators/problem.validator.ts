@@ -28,7 +28,7 @@ export class ProblemValidator {
         )
         .required(),
       constraints: Joi.string().required(),
-      testcases: Joi.array()
+      testCases: Joi.array()
         .items(
           Joi.object({
             input: Joi.string().required(),
@@ -38,13 +38,13 @@ export class ProblemValidator {
         .min(1)
         .required(),
 
-      codeSnippets: Joi.object()
+      codeSnippet: Joi.object()
         .pattern(
           Joi.string().valid('PYTHON', 'JAVASCRIPT', 'JAVA'),
           Joi.string()
         )
         .required(),
-      referenceSolutions: Joi.object()
+      referenceSolution: Joi.object()
         .pattern(
           Joi.string().valid('PYTHON', 'JAVASCRIPT', 'JAVA'),
           Joi.string()

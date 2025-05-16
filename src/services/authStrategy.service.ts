@@ -29,9 +29,9 @@ export class AuthStrategy implements IAuthStrategy {
     }
     //jwt.sign({data: 'foobar'}, 'secret', { expiresIn: '1h' });
 
-return jwt.sign(payload as object, secret as jwt.Secret, {
-  expiresIn: parseInt(expiresIn || '86400', 10), // fallback to 1 day in seconds if undefined
-});
+    return jwt.sign(payload as object, secret as jwt.Secret, {
+      expiresIn: parseInt(expiresIn || '86400', 10), // fallback to 1 day in seconds if undefined
+    });
   }
 
   verifyToken(token: string): { id: string; role: string } {
@@ -57,5 +57,3 @@ return jwt.sign(payload as object, secret as jwt.Secret, {
     }
   }
 }
-
-

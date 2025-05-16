@@ -44,9 +44,7 @@ export class UserRepository extends BaseRepository<
       },
     });
   }
-
 }
-
 
 // export class UserRepository
 //   extends BaseRepository<User>

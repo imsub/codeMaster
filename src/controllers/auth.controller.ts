@@ -175,9 +175,9 @@ export class AuthController {
   @LogDecorator.LogMethod()
   async refreshToken(req: Request, res: Response) {
     const { refreshToken } = req.cookies;
-    const {email:_email} = req.body;
+    const { email: _email } = req.body;
     const { email, role, id } = req.user || {};
-    if(_email !== email) {
+    if (_email !== email) {
       throw new CustomError('Invalid token', 401);
     }
     const response = await this.authService.getRecordByMultipleFields({
@@ -268,7 +268,7 @@ export class AuthController {
       },
       isEmailVerified: true,
     });
-    if (!!response) { 
+    if (!!response) {
       const result = await this.authService.updateUser({
         id: response.id,
         forgotPasswordToken: null,
@@ -284,15 +284,17 @@ export class AuthController {
       } else {
         throw new CustomError('Password reset failed', 500);
       }
-    }
-    else {
+    } else {
       throw new CustomError('Invalid token', 401);
     }
   }
   @LogDecorator.LogMethod()
-  async resendEmailVerification(req: Request, res: Response){
+  async resendEmailVerification(req: Request, res: Response) {
     const { email } = req.body;
-    const _userInfo = await this.authService.getRecordByMultipleFields({email, isEmailVerified: false});
+    const _userInfo = await this.authService.getRecordByMultipleFields({
+      email,
+      isEmailVerified: false,
+    });
     if (!_userInfo?.email) {
       throw new CustomError('Incorrect Email or Email already verified', 401);
     }
@@ -325,7 +327,7 @@ export class AuthController {
   }
   @LogDecorator.LogMethod()
   async changeCurrentPassword(req: Request, res: Response) {
-    const { currentPassword , newPassword } = req.body;
+    const { currentPassword, newPassword } = req.body;
     const { email, role, id } = req.user || {};
     const response = await this.authService.getRecordByMultipleFields({
       email,
@@ -355,8 +357,7 @@ export class AuthController {
       } else {
         throw new CustomError('Password change failed', 500);
       }
-    }
-    else {
+    } else {
       throw new CustomError('Invalid token', 401);
     }
   }
