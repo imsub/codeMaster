@@ -8,6 +8,8 @@ import {
 import { AuthRoutes } from '../routes/auth.route';
 import { ProblemRoutes } from '../routes/problem.route';
 import { SubmissionRoutes } from '../routes/submission.route';
+import { ExecuteCodeRoutes } from '../routes/executeCode.route';
+import { PlaylistRoutes } from '../routes/playlist.route';
 import { Router } from '../routes';
 import {
   AuthValidator,
@@ -55,6 +57,14 @@ const container = new Container();
 const prisma = new PrismaClient();
 container.bind<PrismaClient>(TYPES.PrismaClient).toConstantValue(prisma);
 container.bind<AuthRoutes>(TYPES.AuthRoutes).to(AuthRoutes).inSingletonScope();
+container
+  .bind<PlaylistRoutes>(TYPES.PlaylistRoutes)
+  .to(PlaylistRoutes)
+  .inSingletonScope();
+container
+  .bind<ExecuteCodeRoutes>(TYPES.ExecuteCodeRoutes)
+  .to(ExecuteCodeRoutes)
+  .inSingletonScope();
 container
   .bind<SubmissionRoutes>(TYPES.SubmissionRoutes)
   .to(SubmissionRoutes)
