@@ -1,22 +1,23 @@
-import { Container } from 'inversify';
-import { TYPES } from '../types';
+import {Container} from "inversify";
+import {TYPES} from "../types";
 import {
   ErrorMiddleware,
   AuthMiddleware,
   ResponseMiddleware,
-} from '../middlewares';
-import { AuthRoutes } from '../routes/auth.route';
-import { ProblemRoutes } from '../routes/problem.route';
-import { SubmissionRoutes } from '../routes/submission.route';
-import { ExecuteCodeRoutes } from '../routes/executeCode.route';
-import { PlaylistRoutes } from '../routes/playlist.route';
-import { Router } from '../routes';
+} from "../middlewares";
+import {AuthRoutes} from "../routes/auth.route";
+import {ProblemRoutes} from "../routes/problem.route";
+import {SubmissionRoutes} from "../routes/submission.route";
+import {ExecuteCodeRoutes} from "../routes/executeCode.route";
+import {PlaylistRoutes} from "../routes/playlist.route";
+import {Router} from "../routes";
 import {
   AuthValidator,
   ProblemValidator,
   SubmissionValidator,
   JwtTokenValidator,
-} from '../validators';
+  ExecuteCodeValidator,
+} from "../validators";
 import {
   UserRepository,
   ProblemRepository,
@@ -25,21 +26,26 @@ import {
   ProblemInPlaylistRepository,
   ProblemSolvedRepository,
   TestCaseResultRepository,
-} from '../repositories';
+} from "../repositories";
 import {
   AuthController,
   ProblemController,
   SubmissionController,
-} from '../controllers';
-import { CatchAsync, LoggerFactory, CacheManager } from '../utils';
-import { PrismaClient } from '../../prisma/generated/prisma/index.js';
+  ExecuteCodeController,
+} from "../controllers";
+import {CatchAsync, LoggerFactory, CacheManager} from "../utils";
+import {PrismaClient} from "../../prisma/generated/prisma/index.js";
 import {
   AuthService,
   AuthStrategy,
   ProblemService,
   Judge0Service,
   SubmissionService,
-} from '../services';
+  ProblemInPlaylistService,
+  ExecuteCodeService,
+  PlaylistService,
+  ProblemSolvedService,
+} from "../services";
 import {
   IUserRepository,
   IProblemRepository,
@@ -47,10 +53,10 @@ import {
   IAuthService,
   IProblemService,
   IAuthStrategy,
-} from '../interfaces';
-import winston from 'winston';
-import { App } from '../app';
-import { DB } from '../db';
+} from "../interfaces";
+import winston from "winston";
+import {App} from "../app";
+import {DB} from "../db";
 const container = new Container();
 
 // Singleton for PrismaClient
@@ -116,8 +122,6 @@ container
   .to(TestCaseResultRepository)
   .inSingletonScope();
 
-// // Services
-
 container
   .bind<AuthService>(TYPES.AuthService)
   .to(AuthService)
@@ -134,13 +138,31 @@ container
   .bind<Judge0Service>(TYPES.Judge0Service)
   .to(Judge0Service)
   .inSingletonScope();
+container
+  .bind<ProblemInPlaylistService>(TYPES.ProblemInPlaylistService)
+  .to(ProblemInPlaylistService)
+  .inSingletonScope();
+container
+  .bind<ExecuteCodeService>(TYPES.ExecuteCodeService)
+  .to(ExecuteCodeService)
+  .inSingletonScope();
+container
+  .bind<PlaylistService>(TYPES.PlaylistService)
+  .to(PlaylistService)
+  .inSingletonScope();
+container
+  .bind<ProblemSolvedService>(TYPES.ProblemSolvedService)
+  .to(ProblemSolvedService)
+  .inSingletonScope();
 
 container
   .bind<IAuthStrategy>(TYPES.AuthStrategy)
   .to(AuthStrategy)
   .inSingletonScope();
-
-// // Controllers
+container
+  .bind<ExecuteCodeController>(TYPES.ExecuteCodeController)
+  .to(ExecuteCodeController)
+  .inSingletonScope();
 
 container
   .bind<AuthController>(TYPES.AuthController)
@@ -170,7 +192,10 @@ container
   .bind<JwtTokenValidator>(TYPES.JwtTokenValidator)
   .to(JwtTokenValidator)
   .inSingletonScope();
-// container
+container
+  .bind<ExecuteCodeValidator>(TYPES.ExecuteCodeValidator)
+  .to(ExecuteCodeValidator)
+  .inSingletonScope();
 
 container
   .bind<ErrorMiddleware>(TYPES.ErrorMiddleware)
@@ -185,4 +210,4 @@ container
 container.bind<CatchAsync>(TYPES.CatchAsync).to(CatchAsync).inSingletonScope();
 container.bind<App>(TYPES.App).to(App).inSingletonScope();
 
-export { container };
+export {container};

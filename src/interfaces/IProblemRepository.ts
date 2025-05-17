@@ -1,4 +1,4 @@
-import type { Problem } from '../../prisma/generated/prisma/index';
+import type {Problem} from "../../prisma/generated/prisma/index";
 
 export interface IProblemRepository {
   create(data: {

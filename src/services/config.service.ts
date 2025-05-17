@@ -1,5 +1,5 @@
 export class ConfigService {
-  private config: { [key: string]: string | number };
+  private config: {[key: string]: string | number};
   private Joi: string;
   private logger: string;
   private dotenv: string;
@@ -20,24 +20,24 @@ export class ConfigService {
     this.config = this.validateConfig();
   }
 
-  private validateConfig(): { [key: string]: string | number } {
+  private validateConfig(): {[key: string]: string | number} {
     const schema = this.Joi.object({
       DATABASE_URL: this.Joi.string().required(),
       JWT_SECRET: this.Joi.string().min(32).required(),
       PORT: this.Joi.number().default(3000),
     });
-    this.dotenv.config({ path: this.path.resolve(process.cwd(), '.env') });
+    this.dotenv.config({path: this.path.resolve(process.cwd(), ".env")});
     const schemaKeys = Object.keys(schema.describe().keys);
     const filteredEnv = Object.fromEntries(
-      schemaKeys.map((key) => [key, process.env[key]])
+      schemaKeys.map(key => [key, process.env[key]])
     );
-    const { error, value } = schema
-      .prefs({ errors: { label: 'key' } })
+    const {error, value} = schema
+      .prefs({errors: {label: "key"}})
       .validate(filteredEnv, {
         abortEarly: false,
       });
     if (error) {
-      this.logger.error('Configuration validation failed', {
+      this.logger.error("Configuration validation failed", {
         error: error.message,
       });
       throw new Error(`Configuration validation failed: ${error.message}`);

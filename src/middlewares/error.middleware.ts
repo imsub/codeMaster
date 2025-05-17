@@ -1,5 +1,5 @@
-import { injectable } from 'inversify';
-import { Request, Response, NextFunction } from 'express';
+import {injectable} from "inversify";
+import {Request, Response, NextFunction} from "express";
 
 @injectable()
 export class ErrorMiddleware {
@@ -7,9 +7,9 @@ export class ErrorMiddleware {
   handleError() {
     return (error: any, req: Request, res: Response, next: NextFunction) => {
       const status = 500;
-      const message = error.message || 'Internal Server Error';
+      const message = error.message || "Internal Server Error";
       // this.logger.error(`Error: ${message}`, { status, stack: error.stack });
-      res.status(status).json({ error: message });
+      res.status(status).json({error: message});
       next();
     };
   }

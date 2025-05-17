@@ -1,5 +1,5 @@
-import { PrismaClient } from '../../prisma/generated/prisma/index.js';
-import { injectable } from 'inversify';
+import {PrismaClient} from "../../prisma/generated/prisma/index.js";
+import {injectable} from "inversify";
 
 @injectable()
 export class DB {

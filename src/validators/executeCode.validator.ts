@@ -1,7 +1,7 @@
-import Joi, { number } from 'joi';
-import { injectable, inject } from 'inversify';
-import { CustomError, LogDecorator } from '../utils';
-import { Request, Response, NextFunction } from 'express';
+import Joi, {number} from "joi";
+import {injectable, inject} from "inversify";
+import {CustomError, LogDecorator} from "../utils";
+import {Request, Response, NextFunction} from "express";
 
 @injectable()
 export class ExecuteCodeValidator {
@@ -14,7 +14,7 @@ export class ExecuteCodeValidator {
       source_code: Joi.string().required(),
       stdin: Joi.array().items(Joi.any()).min(1).required(),
       expected_outputs: Joi.array().items(Joi.any()).min(1).required(),
-      problemId: Joi.string().uuid({ version: 'uuidv4' }).required(),
+      problemId: Joi.string().uuid({version: "uuidv4"}).required(),
     }).custom((value, helpers) => {
       // Ensure both arrays are of equal length
       if (value.stdin.length !== value.expected_outputs.length) {
@@ -24,7 +24,7 @@ export class ExecuteCodeValidator {
       }
       return value;
     });
-    const { error } = schema.validate(req.body);
+    const {error} = schema.validate(req.body);
     if (error) {
       throw new CustomError(error.details[0].message, 400);
     }

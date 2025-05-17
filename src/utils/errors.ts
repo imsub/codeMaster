@@ -10,10 +10,10 @@ export class CustomError extends Error {
   public data: null;
 
   constructor(
-    public message: string = 'Something went wrong',
+    public message: string = "Something went wrong",
     public statusCode: number,
     public errors: string[] | null = [],
-    public stack: string = ''
+    public stack: string = ""
   ) {
     super(message);
     this.statusCode = statusCode;

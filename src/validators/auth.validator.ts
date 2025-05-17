@@ -1,7 +1,7 @@
-import Joi from 'joi';
-import { injectable, inject } from 'inversify';
-import { CustomError, LogDecorator } from '../utils';
-import { Request, Response, NextFunction } from 'express';
+import Joi from "joi";
+import {injectable, inject} from "inversify";
+import {CustomError, LogDecorator} from "../utils";
+import {Request, Response, NextFunction} from "express";
 
 @injectable()
 export class AuthValidator {
@@ -9,7 +9,7 @@ export class AuthValidator {
 
   @LogDecorator.LogMethod()
   validateRegister(req: Request, res: Response, next: NextFunction): void {
-    const { error } = Joi.object({
+    const {error} = Joi.object({
       firstName: Joi.string().min(3).max(30).required(),
       lastName: Joi.string().min(3).max(30).optional(),
       middleName: Joi.string().min(3).max(30).optional(),
@@ -24,20 +24,20 @@ export class AuthValidator {
       refreshToken: Joi.string().optional().default(null),
       emailVerificationToken: Joi.string().optional().default(null),
       forgotPasswordToken: Joi.string().optional().default(null),
-      role: Joi.string().valid('ADMIN', 'USER').required().default('USER'),
+      role: Joi.string().valid("ADMIN", "USER").required().default("USER"),
       email: Joi.string()
-        .email({ tlds: { allow: false } })
+        .email({tlds: {allow: false}})
         .required(),
       password: Joi.string()
         .min(8)
         .required()
         .pattern(
           new RegExp(
-            '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$'
+            "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$"
           )
         )
         .message(
-          'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.'
+          "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character."
         ),
     }).validate(req.body);
     if (error) {
@@ -47,20 +47,20 @@ export class AuthValidator {
   }
   @LogDecorator.LogMethod()
   validateLogin(req: Request, res: Response, next: NextFunction): void {
-    const { error } = Joi.object({
+    const {error} = Joi.object({
       email: Joi.string()
-        .email({ tlds: { allow: false } })
+        .email({tlds: {allow: false}})
         .required(),
       password: Joi.string()
         .min(8)
         .required()
         .pattern(
           new RegExp(
-            '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$'
+            "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$"
           )
         )
         .message(
-          'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.'
+          "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character."
         ),
     }).validate(req.body);
     if (error) {
@@ -70,13 +70,13 @@ export class AuthValidator {
   }
   @LogDecorator.LogMethod()
   validateLogout(req: Request, res: Response, next: NextFunction): void {
-    const { error: bodyError } = Joi.object({
+    const {error: bodyError} = Joi.object({
       email: Joi.string()
-        .email({ tlds: { allow: false } })
+        .email({tlds: {allow: false}})
         .required()
         .messages({
-          'string.email': 'Invalid email format.',
-          'any.required': 'Email is required.',
+          "string.email": "Invalid email format.",
+          "any.required": "Email is required.",
         }),
     }).validate(req.body);
 
@@ -88,16 +88,16 @@ export class AuthValidator {
   }
   @LogDecorator.LogMethod()
   validateVerifyEmail(req: Request, res: Response, next: NextFunction): void {
-    const { token } = req.params ?? req.body;
+    const {token} = req.params ?? req.body;
     const tokenSchema = Joi.object({
       token: Joi.string()
         .pattern(/^[0-9a-f]{40}$/i)
         .required()
         .messages({
-          'Invalid access token format.': 'Invalid access token format.',
+          "Invalid access token format.": "Invalid access token format.",
         }),
     });
-    const { error: tokenError } = tokenSchema.validate({
+    const {error: tokenError} = tokenSchema.validate({
       token,
     });
     if (tokenError) {
@@ -108,26 +108,26 @@ export class AuthValidator {
   }
   @LogDecorator.LogMethod()
   validateRefreshToken(req: Request, res: Response, next: NextFunction): void {
-    const { refreshToken } = req.cookies;
+    const {refreshToken} = req.cookies;
     const tokenSchema = Joi.object({
       refreshToken: Joi.string()
         .pattern(/^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/)
         .required()
         .messages({
-          'string.pattern.base': 'Invalid refresh token format.',
-          'any.required': 'Refresh token is required.',
+          "string.pattern.base": "Invalid refresh token format.",
+          "any.required": "Refresh token is required.",
         }),
     });
-    const { error: tokenError } = tokenSchema.validate({
+    const {error: tokenError} = tokenSchema.validate({
       refreshToken,
     });
 
     if (tokenError) {
       throw new CustomError(tokenError.details[0].message, 400);
     }
-    const { error } = Joi.object({
+    const {error} = Joi.object({
       email: Joi.string()
-        .email({ tlds: { allow: false } })
+        .email({tlds: {allow: false}})
         .required(),
     }).validate(req.body);
     if (error) {
@@ -142,9 +142,9 @@ export class AuthValidator {
     res: Response,
     next: NextFunction
   ): void {
-    const { error } = Joi.object({
+    const {error} = Joi.object({
       email: Joi.string()
-        .email({ tlds: { allow: false } })
+        .email({tlds: {allow: false}})
         .required(),
     }).validate(req.body);
     if (error) {
@@ -154,32 +154,32 @@ export class AuthValidator {
   }
   @LogDecorator.LogMethod()
   validateResetPassword(req: Request, res: Response, next: NextFunction): void {
-    const { token } = req.params ?? req.body;
+    const {token} = req.params ?? req.body;
     const tokenSchema = Joi.object({
       token: Joi.string()
         .pattern(/^[0-9a-f]{40}$/i)
         .required()
         .messages({
-          'Invalid access token format.': 'Invalid access token format.',
+          "Invalid access token format.": "Invalid access token format.",
         }),
     });
-    const { error: tokenError } = tokenSchema.validate({
+    const {error: tokenError} = tokenSchema.validate({
       token,
     });
     if (tokenError) {
       throw new CustomError(tokenError.details[0].message, 400);
     }
-    const { error } = Joi.object({
+    const {error} = Joi.object({
       password: Joi.string()
         .min(8)
         .required()
         .pattern(
           new RegExp(
-            '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$'
+            "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$"
           )
         )
         .message(
-          'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.'
+          "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character."
         ),
     }).validate(req.body);
     if (error) {
@@ -193,9 +193,9 @@ export class AuthValidator {
     res: Response,
     next: NextFunction
   ): void {
-    const { error } = Joi.object({
+    const {error} = Joi.object({
       email: Joi.string()
-        .email({ tlds: { allow: false } })
+        .email({tlds: {allow: false}})
         .required(),
     }).validate(req.body);
     if (error) {
@@ -209,28 +209,28 @@ export class AuthValidator {
     res: Response,
     next: NextFunction
   ): void {
-    const { error } = Joi.object({
+    const {error} = Joi.object({
       currentPassword: Joi.string()
         .min(8)
         .required()
         .pattern(
           new RegExp(
-            '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$'
+            "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$"
           )
         )
         .message(
-          'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.'
+          "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character."
         ),
       newPassword: Joi.string()
         .min(8)
         .required()
         .pattern(
           new RegExp(
-            '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$'
+            "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$"
           )
         )
         .message(
-          'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.'
+          "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character."
         ),
     }).validate(req.body);
     if (error) {

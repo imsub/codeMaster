@@ -19,21 +19,13 @@ export interface IUserModel {
 }
 
 export interface IAuthService {
-  register(data: {
-    name: string;
-    email: string;
-    password: string;
-  }): Promise<any>;
-  login(data: { email: string; password: string }): Promise<any>;
+  register(data: {name: string; email: string; password: string}): Promise<any>;
+  login(data: {email: string; password: string}): Promise<any>;
 }
 
 export interface IAuthValidator {
-  validateRegister(data: {
-    name: string;
-    email: string;
-    password: string;
-  }): void;
-  validateLogin(data: { email: string; password: string }): void;
+  validateRegister(data: {name: string; email: string; password: string}): void;
+  validateLogin(data: {email: string; password: string}): void;
 }
 
 export interface IAuthMiddleware {
@@ -53,5 +45,5 @@ export interface IAuthRoutes {
 }
 
 export interface ICustomError {
-  new (message: string, statusCode: number): Error & { statusCode: number };
+  new (message: string, statusCode: number): Error & {statusCode: number};
 }

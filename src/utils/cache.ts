@@ -1,5 +1,5 @@
-import { injectable } from 'inversify';
-import Redis from 'ioredis';
+import {injectable} from "inversify";
+import Redis from "ioredis";
 
 /**
  * Class for managing Redis caching
@@ -9,7 +9,7 @@ export class CacheManager {
   private redis: Redis;
 
   constructor() {
-    this.redis = new Redis(process.env.REDIS_URL || '');
+    this.redis = new Redis(process.env.REDIS_URL || "");
   }
 
   async getCache(key: string): Promise<string | null> {
@@ -17,13 +17,13 @@ export class CacheManager {
   }
 
   async setCache(key: string, value: string, expiry: number): Promise<void> {
-    await this.redis.set(key, value, 'EX', expiry);
+    await this.redis.set(key, value, "EX", expiry);
   }
   async deleteCache(key: string): Promise<void> {
     await this.redis.del(key);
   }
   async clearCache(): Promise<void> {
-    const keys = await this.redis.keys('*');
+    const keys = await this.redis.keys("*");
     if (keys.length > 0) {
       await this.redis.del(keys);
     }
@@ -43,7 +43,7 @@ export class CacheManager {
     await this.redis.del(key);
   }
   async clearAllCache(): Promise<void> {
-    const keys = await this.redis.keys('*');
+    const keys = await this.redis.keys("*");
     if (keys.length > 0) {
       await this.redis.del(keys);
     }

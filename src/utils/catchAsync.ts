@@ -3,8 +3,8 @@
 Return a function that catches and forwards any error a function throws to the next middleware
 @param {Class}  - input class that catchAsync wraps around*/
 
-import { injectable } from 'inversify';
-import { Request, Response, NextFunction } from 'express';
+import {injectable} from "inversify";
+import {Request, Response, NextFunction} from "express";
 
 /**
  * Class for wrapping async route handlers to catch errors

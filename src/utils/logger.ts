@@ -1,12 +1,12 @@
-import winston from 'winston';
+import winston from "winston";
 
 export class LoggerFactory {
   static createLogger(): winston.Logger {
     return winston.createLogger({
-      level: 'info',
+      level: "info",
       format: winston.format.combine(
-        winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-        winston.format.errors({ stack: true }), // log stack traces
+        winston.format.timestamp({format: "YYYY-MM-DD HH:mm:ss"}),
+        winston.format.errors({stack: true}), // log stack traces
         winston.format.json()
       ),
       transports: [
@@ -20,19 +20,19 @@ export class LoggerFactory {
 
         // File transport for errors only
         new winston.transports.File({
-          filename: 'logs/error.log',
-          level: 'error',
+          filename: "logs/error.log",
+          level: "error",
         }),
 
         // File transport for warnings
         new winston.transports.File({
-          filename: 'logs/warn.log',
-          level: 'warn',
+          filename: "logs/warn.log",
+          level: "warn",
         }),
 
         // File transport for all logs (combined)
         new winston.transports.File({
-          filename: 'logs/combined.log',
+          filename: "logs/combined.log",
         }),
       ],
       exitOnError: false,

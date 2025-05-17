@@ -1,4 +1,4 @@
-import type { User } from '../../prisma/generated/prisma/index';
+import type {User} from "../../prisma/generated/prisma/index";
 
 export interface IUserService {
   getUserById(id: string): Promise<User | null>;

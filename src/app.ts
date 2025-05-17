@@ -1,13 +1,13 @@
-import express from 'express';
-import cors from 'cors';
+import express from "express";
+import cors from "cors";
 //import { PrismaClient } from '../prisma/generated/prisma/index.js';
-import winston from 'winston';
-import cookieParser from 'cookie-parser';
-import helmet from 'helmet';
-import { injectable, inject } from 'inversify';
-import { TYPES } from './types/index';
-import { Router } from './routes/index';
-import { ErrorMiddleware, ResponseMiddleware } from './middlewares';
+import winston from "winston";
+import cookieParser from "cookie-parser";
+import helmet from "helmet";
+import {injectable, inject} from "inversify";
+import {TYPES} from "./types/index";
+import {Router} from "./routes/index";
+import {ErrorMiddleware, ResponseMiddleware} from "./middlewares";
 // import { SwaggerSetup } from './docs/swagger';
 
 @injectable()
@@ -40,8 +40,8 @@ export class App {
     this.app.use(express.json());
     this.app.use(cookieParser());
     this.app.use(
-      express.static('public', {
-        maxAge: '1d', // Cache files for 1 day
+      express.static("public", {
+        maxAge: "1d", // Cache files for 1 day
         etag: false, // Disable ETag header if not needed
       })
     );
@@ -53,7 +53,7 @@ export class App {
 
   private setupRoutes() {
     //this.app.use('/api/v1/healthcheck',healthCheckRouter.getRouter());
-    this.app.use('/api/v1', this.router.getRouter());
+    this.app.use("/api/v1", this.router.getRouter());
     // this.app.use('/auth', this.authRoutes.getRouter());
     // this.app.use('/users', this.userRoutes.getRouter());
     // this.app.use('/problems', this.problemRoutes.getRouter());

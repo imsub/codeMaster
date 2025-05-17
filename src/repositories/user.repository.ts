@@ -1,13 +1,11 @@
-import { injectable, inject } from 'inversify';
-import { TYPES } from '../types';
-import { BaseRepository } from './base.repository';
-// import { IUserRepository } from '../interfaces/IUserRepository';
+import {injectable, inject} from "inversify";
+import {TYPES} from "../types";
+import {BaseRepository} from "./base.repository";
 import {
   User,
   PrismaClient,
   Prisma,
-} from '../../prisma/generated/prisma/index.js';
-import { CustomError } from '../utils/errors';
+} from "../../prisma/generated/prisma/index.js";
 
 @injectable()
 export class UserRepository extends BaseRepository<
@@ -15,14 +13,17 @@ export class UserRepository extends BaseRepository<
   Prisma.UserCreateInput,
   Prisma.UserCreateManyInput,
   Prisma.UserUpdateInput,
-  Prisma.UserWhereUniqueInput
+  Prisma.UserWhereUniqueInput,
+  Prisma.UserFindManyArgs,
+  Prisma.UserFindFirstArgs,
+  Prisma.UserCountArgs
 > {
   constructor(@inject(TYPES.PrismaClient) private prismaClient: PrismaClient) {
     super(prismaClient, prismaClient.user);
   }
   async findByEmail(email: string): Promise<User | null> {
     return await this.prisma.user.findUnique({
-      where: { email },
+      where: {email},
       select: {
         id: true,
         email: true,

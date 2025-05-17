@@ -1,5 +1,5 @@
-import { injectable, inject } from 'inversify';
-import { Request, Response, NextFunction } from 'express';
+import {injectable, inject} from "inversify";
+import {Request, Response, NextFunction} from "express";
 
 declare global {
   namespace Express {
@@ -12,10 +12,10 @@ declare global {
     }
   }
 }
-import { TYPES } from '../types';
-import { AuthService } from '../services';
+import {TYPES} from "../types";
+import {AuthService} from "../services";
 //import { CustomError } from '../utils/errors';
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 
 @injectable()
 export class AuthMiddleware {
@@ -31,31 +31,31 @@ export class AuthMiddleware {
       next: NextFunction
     ) => {
       const token =
-        tokenType.toUpperCase() === 'ACCESS'
+        tokenType.toUpperCase() === "ACCESS"
           ? req.cookies.accessToken
           : req.cookies.refreshToken;
       const secret = process.env[`${tokenType.toUpperCase()}_TOKEN_SECRET`];
       if (!secret)
-        return res.status(500).json({ error: 'Token secret not configured' });
+        return res.status(500).json({error: "Token secret not configured"});
 
-      if (!token) return res.status(401).json({ error: 'Token missing' });
+      if (!token) return res.status(401).json({error: "Token missing"});
       jwt.verify(
         token,
         secret,
         async (err: jwt.VerifyErrors | null, decoded: any) => {
           if (err) {
             // Handle expired or invalid token
-            return res.status(401).json({ error: err.message });
+            return res.status(401).json({error: err.message});
           }
-          const { id, role, email } = decoded as {
+          const {id, role, email} = decoded as {
             id: string;
             role?: string;
             email?: string;
           };
           const response = await this.authService.getRecordByMultipleFields({
             id,
-            ...(role && { role }),
-            ...(email && { email }),
+            ...(role && {role}),
+            ...(email && {email}),
           });
           if (!!response) {
             req.user = {
@@ -65,24 +65,24 @@ export class AuthMiddleware {
             };
             next();
           } else {
-            return res.status(404).json({ error: 'Unauthoried' });
+            return res.status(404).json({error: "Unauthoried"});
           }
         }
       );
     };
   }
   checkAdminRole(req: Request, res: Response, next: NextFunction): any {
-    if (req.user && req.user.role === 'ADMIN') {
+    if (req.user && req.user.role === "ADMIN") {
       next();
     } else {
-      return res.status(403).json({ error: 'Forbidden' });
+      return res.status(403).json({error: "Forbidden"});
     }
   }
   checkUserRole(req: Request, res: Response, next: NextFunction): any {
-    if (req.user && req.user.role === 'USER') {
+    if (req.user && req.user.role === "USER") {
       next();
     } else {
-      return res.status(403).json({ error: 'Forbidden' });
+      return res.status(403).json({error: "Forbidden"});
     }
   }
 }

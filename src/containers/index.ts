@@ -1,1 +1,1 @@
-export * from './dependency.container';
+export * from "./dependency.container";

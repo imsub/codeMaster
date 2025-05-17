@@ -1,10 +1,10 @@
-import { inject, injectable } from 'inversify';
-import { TYPES } from '../types';
-import winston from 'winston';
-import { container } from '../containers/index';
-import { CustomError } from './errors';
+import {inject, injectable} from "inversify";
+import {TYPES} from "../types";
+import winston from "winston";
+import {container} from "../containers/index";
+import {CustomError} from "./errors";
 
-import { createLogger, format, transports } from 'winston';
+import {createLogger, format, transports} from "winston";
 /**
  * Decorator for logging method execution
  */
@@ -30,9 +30,9 @@ export class LogDecorator {
         const safeStringify = (obj: any): string => {
           const seen = new WeakSet();
           return JSON.stringify(obj, function (key, value) {
-            if (typeof value === 'object' && value !== null) {
+            if (typeof value === "object" && value !== null) {
               if (seen.has(value)) {
-                return '[Circular]';
+                return "[Circular]";
               }
               seen.add(value);
             }
@@ -43,7 +43,7 @@ export class LogDecorator {
         //   !index ? JSON.stringify(args[index]?.baseUrl) :
         //   JSON.stringify(arg)
         // }).join(', ');
-        const argsStr = args.map((arg) => safeStringify(arg)).join(', ');
+        const argsStr = args.map(arg => safeStringify(arg)).join(", ");
         logger.debug(
           `[${className}.${methodName}] Called with args: ${argsStr}`
         );
@@ -53,14 +53,14 @@ export class LogDecorator {
           const result = originalMethod.apply(this, args);
           if (result instanceof Promise) {
             return result
-              .then((res) => {
+              .then(res => {
                 const duration = Date.now() - start;
                 logger.debug(
                   `[${className}.${methodName}] Completed in ${duration}ms`
                 );
                 return res;
               })
-              .catch((err) => {
+              .catch(err => {
                 const duration = Date.now() - start;
                 logger.error(
                   `[${className}.${methodName}] Failed in ${duration}ms: ${err}`
@@ -89,10 +89,10 @@ export class LogDecorator {
 }
 
 export const logger = createLogger({
-  level: 'debug',
+  level: "debug",
   format: format.combine(
     format.timestamp(),
-    format.printf(({ level, message, timestamp }) => {
+    format.printf(({level, message, timestamp}) => {
       return `[${timestamp}] ${level.toUpperCase()}: ${message}`;
     })
   ),

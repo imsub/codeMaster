@@ -1,19 +1,19 @@
 export class LoggerService {
   private logger: any;
 
-  constructor(deps: { winston: any }) {
+  constructor(deps: {winston: any}) {
     this.logger = deps.winston.createLogger({
-      level: 'info',
+      level: "info",
       format: deps.winston.format.combine(
         deps.winston.format.timestamp(),
         deps.winston.format.json()
       ),
       transports: [
         new deps.winston.transports.File({
-          filename: 'logs/error.log',
-          level: 'error',
+          filename: "logs/error.log",
+          level: "error",
         }),
-        new deps.winston.transports.File({ filename: 'logs/combined.log' }),
+        new deps.winston.transports.File({filename: "logs/combined.log"}),
         new deps.winston.transports.Console(),
       ],
     });

@@ -1,5 +1,5 @@
-import { PrismaClient, Prisma } from '../../prisma/generated/prisma/index.js';
-import { injectable } from 'inversify';
+import {PrismaClient, Prisma} from "../../prisma/generated/prisma/index.js";
+import {injectable} from "inversify";
 
 type Delegate<
   TModel,
@@ -7,26 +7,22 @@ type Delegate<
   TCreateManyInput,
   TUpdateInput,
   TWhereUniqueInput,
+  TFindManyArgs,
+  TFindFirstArgs,
+  TCountArgs,
 > = {
-  create(args: { data: TCreateInput }): Promise<TModel>;
+  create(args: {data: TCreateInput}): Promise<TModel>;
   findUnique(args: {
     where: TWhereUniqueInput;
     include?: any;
     select?: any;
   }): Promise<TModel | null>;
-  findMany(args?: any): Promise<TModel[]>;
-  update(args: {
-    where: TWhereUniqueInput;
-    data: TUpdateInput;
-  }): Promise<TModel>;
-  delete(args: { where: TWhereUniqueInput }): Promise<TModel>;
-  findFirst(args: {
-    where?: any;
-    include?: any;
-    select?: any;
-  }): Promise<TModel | null>;
-  createMany(args: { data: TCreateManyInput[] }): Promise<{ count: number }>;
-  count(args?: { where?: any; select?: any }): Promise<number>;
+  findMany(args: TFindManyArgs): Promise<TModel[]>;
+  update(args: {where: TWhereUniqueInput; data: TUpdateInput}): Promise<TModel>;
+  delete(args: {where: TWhereUniqueInput}): Promise<TModel>;
+  findFirst(args: TFindFirstArgs): Promise<TModel | null>;
+  createMany(args: {data: TCreateManyInput[]}): Promise<{count: number}>;
+  count(args: TCountArgs): Promise<number>;
   upsert(args: {
     where: TWhereUniqueInput;
     create: TCreateInput;
@@ -41,6 +37,9 @@ export class BaseRepository<
   TCreateManyInput,
   TUpdateInput,
   TWhereUniqueInput,
+  TFindManyArgs = any,
+  TFindFirstArgs = any,
+  TCountArgs = any,
 > {
   protected prisma: PrismaClient;
   protected modelDelegate: Delegate<
@@ -48,7 +47,10 @@ export class BaseRepository<
     TCreateInput,
     TCreateManyInput,
     TUpdateInput,
-    TWhereUniqueInput
+    TWhereUniqueInput,
+    TFindManyArgs,
+    TFindFirstArgs,
+    TCountArgs
   >;
 
   constructor(
@@ -58,7 +60,10 @@ export class BaseRepository<
       TCreateInput,
       TCreateManyInput,
       TUpdateInput,
-      TWhereUniqueInput
+      TWhereUniqueInput,
+      TFindManyArgs,
+      TFindFirstArgs,
+      TCountArgs
     >
   ) {
     this.prisma = prismaClient;
@@ -66,12 +71,12 @@ export class BaseRepository<
   }
 
   async create(data: TCreateInput): Promise<TModel> {
-    return this.modelDelegate.create({ data });
+    return this.modelDelegate.create({data});
   }
 
   async findById(
     where: TWhereUniqueInput,
-    options?: { select?: any; include?: any }
+    options?: {select?: any; include?: any}
   ): Promise<TModel | null> {
     return this.modelDelegate.findUnique({
       where,
@@ -79,34 +84,28 @@ export class BaseRepository<
     });
   }
 
-  async findFirst(
-    filter?: any,
-    options?: { select?: any; include?: any }
-  ): Promise<TModel | null> {
-    return this.modelDelegate.findFirst({
-      where: filter,
-      ...options,
-    });
-  }
-
-  async findAll(filter?: any): Promise<TModel[]> {
+  async findAll(filter: TFindManyArgs): Promise<TModel[]> {
     return this.modelDelegate.findMany(filter);
   }
 
+  async findFirst(filter: TFindFirstArgs): Promise<TModel | null> {
+    return this.modelDelegate.findFirst(filter);
+  }
+
+  async count(filter: TCountArgs): Promise<number> {
+    return this.modelDelegate.count(filter);
+  }
+
   async update(where: TWhereUniqueInput, data: TUpdateInput): Promise<TModel> {
-    return this.modelDelegate.update({ where, data });
+    return this.modelDelegate.update({where, data});
   }
 
   async delete(where: TWhereUniqueInput): Promise<TModel> {
-    return this.modelDelegate.delete({ where });
+    return this.modelDelegate.delete({where});
   }
 
-  async batchCreate(data: TCreateManyInput[]): Promise<{ count: number }> {
-    return this.modelDelegate.createMany({ data });
-  }
-
-  async count(filter?: { where?: any; select?: any }): Promise<number> {
-    return this.modelDelegate.count(filter);
+  async batchCreate(data: TCreateManyInput[]): Promise<{count: number}> {
+    return this.modelDelegate.createMany({data});
   }
 
   async upsert(
