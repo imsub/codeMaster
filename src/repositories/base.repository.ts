@@ -1,64 +1,129 @@
 import { PrismaClient, Prisma } from '../../prisma/generated/prisma/index.js';
-import { CustomError } from '../utils/errors';
 import { injectable } from 'inversify';
 
-@injectable()
-export class BaseRepository<TModel, TCreateInput, TUpdateInput> {
-  protected prisma: PrismaClient;
-  protected modelDelegate: any;
+type Delegate<
+  TModel,
+  TCreateInput,
+  TCreateManyInput,
+  TUpdateInput,
+  TWhereUniqueInput,
+> = {
+  create(args: { data: TCreateInput }): Promise<TModel>;
+  findUnique(args: {
+    where: TWhereUniqueInput;
+    include?: any;
+    select?: any;
+  }): Promise<TModel | null>;
+  findMany(args?: any): Promise<TModel[]>;
+  update(args: {
+    where: TWhereUniqueInput;
+    data: TUpdateInput;
+  }): Promise<TModel>;
+  delete(args: { where: TWhereUniqueInput }): Promise<TModel>;
+  findFirst(args: {
+    where?: any;
+    include?: any;
+    select?: any;
+  }): Promise<TModel | null>;
+  createMany(args: { data: TCreateManyInput[] }): Promise<{ count: number }>;
+  count(args?: { where?: any; select?: any }): Promise<number>;
+  upsert(args: {
+    where: TWhereUniqueInput;
+    create: TCreateInput;
+    update: TUpdateInput;
+  }): Promise<TModel>;
+};
 
-  constructor(prismaClient: PrismaClient, modelDelegate: any) {
+@injectable()
+export class BaseRepository<
+  TModel,
+  TCreateInput,
+  TCreateManyInput,
+  TUpdateInput,
+  TWhereUniqueInput,
+> {
+  protected prisma: PrismaClient;
+  protected modelDelegate: Delegate<
+    TModel,
+    TCreateInput,
+    TCreateManyInput,
+    TUpdateInput,
+    TWhereUniqueInput
+  >;
+
+  constructor(
+    prismaClient: PrismaClient,
+    modelDelegate: Delegate<
+      TModel,
+      TCreateInput,
+      TCreateManyInput,
+      TUpdateInput,
+      TWhereUniqueInput
+    >
+  ) {
     this.prisma = prismaClient;
     this.modelDelegate = modelDelegate;
   }
 
   async create(data: TCreateInput): Promise<TModel> {
-    return await this.modelDelegate.create({ data });
+    return this.modelDelegate.create({ data });
   }
 
-  async findById(id: any): Promise<TModel | null> {
-    return this.modelDelegate.findUnique({ where: { id } });
+  async findById(
+    where: TWhereUniqueInput,
+    options?: { select?: any; include?: any }
+  ): Promise<TModel | null> {
+    return this.modelDelegate.findUnique({
+      where,
+      ...options,
+    });
+  }
+
+  async findFirst(
+    filter?: any,
+    options?: { select?: any; include?: any }
+  ): Promise<TModel | null> {
+    return this.modelDelegate.findFirst({
+      where: filter,
+      ...options,
+    });
   }
 
   async findAll(filter?: any): Promise<TModel[]> {
-    if (!!filter) {
-      return this.modelDelegate.findMany(filter);
-    }
-    return this.modelDelegate.findMany();
+    return this.modelDelegate.findMany(filter);
   }
 
-  async update(id: any, data: TUpdateInput): Promise<TModel> {
-    return this.modelDelegate.update({
-      where: { id },
-      data: {
-        ...data,
-      },
-    });
+  async update(where: TWhereUniqueInput, data: TUpdateInput): Promise<TModel> {
+    return this.modelDelegate.update({ where, data });
   }
 
-  async delete(id: any): Promise<TModel> {
-    return this.modelDelegate.delete({ where: { id } });
+  async delete(where: TWhereUniqueInput): Promise<TModel> {
+    return this.modelDelegate.delete({ where });
   }
-  async findFirst(
-    where?: Prisma.UserWhereInput,
-    select?: Prisma.UserSelect
-  ): Promise<TModel | null> {
-    return await this.modelDelegate.findFirst({
-      where,
-      select,
-    });
-  }
-  async batchCreate(data: TCreateInput[]): Promise<{ count: number }> {
+
+  async batchCreate(data: TCreateManyInput[]): Promise<{ count: number }> {
     return this.modelDelegate.createMany({ data });
   }
 
-  async count(
-    where?: Prisma.UserWhereInput | Prisma.UserSelect | any,
-    select?: Prisma.UserSelect
-  ): Promise<number> {
-    return await this.modelDelegate.count({
+  async count(filter?: { where?: any; select?: any }): Promise<number> {
+    return this.modelDelegate.count(filter);
+  }
+
+  async upsert(
+    where: TWhereUniqueInput,
+    create: TCreateInput,
+    update: TUpdateInput
+  ): Promise<TModel> {
+    return this.modelDelegate.upsert({
       where,
-      select,
+      create,
+      update,
     });
+  }
+
+  async withTransaction<R>(
+    callback: (tx: Prisma.TransactionClient) => Promise<R>
+  ): Promise<R> {
+    return this.prisma.$transaction(callback);
   }
 }

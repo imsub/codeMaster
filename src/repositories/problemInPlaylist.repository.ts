@@ -12,7 +12,9 @@ import { CustomError } from '../utils/errors';
 export class ProblemInPlaylistRepository extends BaseRepository<
   ProblemInPlaylist,
   Prisma.ProblemInPlaylistCreateInput,
-  Prisma.ProblemInPlaylistUpdateInput
+  Prisma.ProblemInPlaylistCreateManyInput,
+  Prisma.ProblemInPlaylistUpdateInput,
+  Prisma.ProblemInPlaylistWhereUniqueInput
 > {
   constructor(@inject(TYPES.PrismaClient) private prismaClient: PrismaClient) {
     super(prismaClient, prismaClient.problemInPlaylist);

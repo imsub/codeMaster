@@ -12,7 +12,9 @@ import { CustomError } from '../utils/errors';
 export class SubmissionRepository extends BaseRepository<
   Submission,
   Prisma.SubmissionCreateInput,
-  Prisma.SubmissionUpdateInput
+  Prisma.SubmissionCreateManyInput,
+  Prisma.SubmissionUpdateInput,
+  Prisma.SubmissionWhereUniqueInput // ✅ CORRECT TYPE
 > {
   constructor(@inject(TYPES.PrismaClient) private prismaClient: PrismaClient) {
     super(prismaClient, prismaClient.submission);

@@ -209,7 +209,6 @@ export class AuthValidator {
     res: Response,
     next: NextFunction
   ): void {
-    
     const { error } = Joi.object({
       currentPassword: Joi.string()
         .min(8)

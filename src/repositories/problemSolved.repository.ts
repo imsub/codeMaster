@@ -12,7 +12,9 @@ import { CustomError } from '../utils/errors';
 export class ProblemSolvedRepository extends BaseRepository<
   ProblemSolved,
   Prisma.ProblemSolvedCreateInput,
-  Prisma.ProblemSolvedUpdateInput
+  Prisma.ProblemSolvedCreateManyInput,
+  Prisma.ProblemSolvedUpdateInput,
+  Prisma.ProblemSolvedWhereUniqueInput
 > {
   constructor(@inject(TYPES.PrismaClient) private prismaClient: PrismaClient) {
     super(prismaClient, prismaClient.problemSolved);

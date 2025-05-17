@@ -5,4 +5,4 @@ export * from './submission.repository';
 export * from './playlist.repository';
 export * from './testCaseResult.repository';
 export * from './problemSolved.repository';
-export * from './problemInPlaylist.repository'
+export * from './problemInPlaylist.repository';

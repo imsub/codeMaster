@@ -10,7 +10,6 @@ import { Request, Response, NextFunction } from 'express';
 export class ProblemValidator {
   @LogDecorator.LogMethod()
   validateProblemInput(req: Request, res: Response, next: NextFunction): void {
-
     const schema = Joi.object({
       title: Joi.string().min(1).required(),
       description: Joi.string().min(1).required(),
