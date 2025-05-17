@@ -1,11 +1,11 @@
-import { injectable, inject } from 'inversify';
-import { Router } from 'express';
-import { TYPES } from '../types';
-import { CatchAsync } from '../utils/';
-import { AuthMiddleware } from '../middlewares/';
-import { SubmissionController } from '../controllers';
-import { SubmissionValidator , JwtTokenValidator } from '../validators';
-import rateLimit from 'express-rate-limit';
+import {injectable, inject} from "inversify";
+import {Router} from "express";
+import {TYPES} from "../types";
+import {CatchAsync} from "../utils/";
+import {AuthMiddleware} from "../middlewares/";
+import {SubmissionController} from "../controllers";
+import {SubmissionValidator, JwtTokenValidator} from "../validators";
+import rateLimit from "express-rate-limit";
 
 @injectable()
 export class PlaylistRoutes {
@@ -20,43 +20,49 @@ export class PlaylistRoutes {
     @inject(TYPES.CatchAsync) private catchAsyncHandler: CatchAsync,
     @inject(TYPES.SubmissionController)
     private submissionController: SubmissionController,
-    @inject(TYPES.SubmissionValidator) private submissionValidator: SubmissionValidator,
-    @inject(TYPES.JwtTokenValidator) private jwtValidator: JwtTokenValidator,
+    @inject(TYPES.SubmissionValidator)
+    private submissionValidator: SubmissionValidator,
+    @inject(TYPES.JwtTokenValidator) private jwtValidator: JwtTokenValidator
   ) {
     this.playlistRouter = Router();
     this.setupRoutes();
   }
 
   private setupRoutes() {
-   
-this.playlistRouter.post(
-      '/getAllSubmissions',
+    this.playlistRouter.post(
+      "/getAllSubmissions",
       this.authLimiter,
       this.jwtValidator.validateJwtToken,
-      this.authMiddleware.authenticate('ACCESS'),
+      this.authMiddleware.authenticate("ACCESS"),
       this.authMiddleware.checkAdminRole,
       this.catchAsyncHandler.handle(
-        this.submissionController.getAllSubmissions.bind(this.submissionController)
+        this.submissionController.getAllSubmissions.bind(
+          this.submissionController
+        )
       )
     );
     this.playlistRouter.post(
-      '/getSubmissions/:problemId',
+      "/getSubmissions/:problemId",
       this.authLimiter,
       this.jwtValidator.validateJwtToken,
-      this.authMiddleware.authenticate('ACCESS'),
+      this.authMiddleware.authenticate("ACCESS"),
       this.submissionValidator.validateProblemId,
       this.catchAsyncHandler.handle(
-        this.submissionController.getSubmissionsForProblem.bind(this.submissionController)
+        this.submissionController.getSubmissionsForProblem.bind(
+          this.submissionController
+        )
       )
     );
     this.playlistRouter.post(
-      '/getSubmissionsCount/:problemId',
+      "/getSubmissionsCount/:problemId",
       this.authLimiter,
       this.jwtValidator.validateJwtToken,
-      this.authMiddleware.authenticate('ACCESS'),
+      this.authMiddleware.authenticate("ACCESS"),
       this.submissionValidator.validateProblemId,
       this.catchAsyncHandler.handle(
-        this.submissionController.getAllTheSubmissionsForProblem.bind(this.submissionController)
+        this.submissionController.getAllTheSubmissionsForProblem.bind(
+          this.submissionController
+        )
       )
     );
   }

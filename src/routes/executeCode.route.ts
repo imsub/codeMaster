@@ -1,11 +1,11 @@
-import { injectable, inject } from 'inversify';
-import { Router } from 'express';
-import { TYPES } from '../types';
-import { CatchAsync } from '../utils/';
-import { AuthMiddleware } from '../middlewares/';
-import { SubmissionController } from '../controllers';
-import { SubmissionValidator , JwtTokenValidator } from '../validators';
-import rateLimit from 'express-rate-limit';
+import {injectable, inject} from "inversify";
+import {Router} from "express";
+import {TYPES} from "../types";
+import {CatchAsync} from "../utils/";
+import {AuthMiddleware} from "../middlewares/";
+import {ExecuteCodeController} from "../controllers";
+import {ExecuteCodeValidator, JwtTokenValidator} from "../validators";
+import rateLimit from "express-rate-limit";
 
 @injectable()
 export class ExecuteCodeRoutes {
@@ -18,45 +18,25 @@ export class ExecuteCodeRoutes {
   constructor(
     @inject(TYPES.AuthMiddleware) private authMiddleware: AuthMiddleware,
     @inject(TYPES.CatchAsync) private catchAsyncHandler: CatchAsync,
-    @inject(TYPES.SubmissionController)
-    private submissionController: SubmissionController,
-    @inject(TYPES.SubmissionValidator) private submissionValidator: SubmissionValidator,
-    @inject(TYPES.JwtTokenValidator) private jwtValidator: JwtTokenValidator,
+    @inject(TYPES.ExecuteCodeController)
+    private executeCodeController: ExecuteCodeController,
+    @inject(TYPES.ExecuteCodeValidator)
+    private executeCodeValidator: ExecuteCodeValidator,
+    @inject(TYPES.JwtTokenValidator) private jwtValidator: JwtTokenValidator
   ) {
     this.executeCodeRouter = Router();
     this.setupRoutes();
   }
 
   private setupRoutes() {
-   
-this.executeCodeRouter.post(
-      '/getAllSubmissions',
-      this.authLimiter,
-      this.jwtValidator.validateJwtToken,
-      this.authMiddleware.authenticate('ACCESS'),
-      this.authMiddleware.checkAdminRole,
-      this.catchAsyncHandler.handle(
-        this.submissionController.getAllSubmissions.bind(this.submissionController)
-      )
-    );
     this.executeCodeRouter.post(
-      '/getSubmissions/:problemId',
+      "/run",
       this.authLimiter,
       this.jwtValidator.validateJwtToken,
-      this.authMiddleware.authenticate('ACCESS'),
-      this.submissionValidator.validateProblemId,
+      this.executeCodeValidator.validateExecuteCode,
+      this.authMiddleware.authenticate("ACCESS"),
       this.catchAsyncHandler.handle(
-        this.submissionController.getSubmissionsForProblem.bind(this.submissionController)
-      )
-    );
-    this.executeCodeRouter.post(
-      '/getSubmissionsCount/:problemId',
-      this.authLimiter,
-      this.jwtValidator.validateJwtToken,
-      this.authMiddleware.authenticate('ACCESS'),
-      this.submissionValidator.validateProblemId,
-      this.catchAsyncHandler.handle(
-        this.submissionController.getAllTheSubmissionsForProblem.bind(this.submissionController)
+        this.executeCodeController.executeCode.bind(this.executeCodeController)
       )
     );
   }

@@ -1,11 +1,11 @@
-import { injectable, inject } from 'inversify';
-import { Router } from 'express';
-import { TYPES } from '../types';
-import { CatchAsync } from '../utils/';
-import { AuthMiddleware } from '../middlewares/';
-import { ProblemController } from '../controllers';
-import { ProblemValidator , JwtTokenValidator } from '../validators';
-import rateLimit from 'express-rate-limit';
+import {injectable, inject} from "inversify";
+import {Router} from "express";
+import {TYPES} from "../types";
+import {CatchAsync} from "../utils/";
+import {AuthMiddleware} from "../middlewares/";
+import {ProblemController} from "../controllers";
+import {ProblemValidator, JwtTokenValidator} from "../validators";
+import rateLimit from "express-rate-limit";
 
 @injectable()
 export class ProblemRoutes {
@@ -21,7 +21,7 @@ export class ProblemRoutes {
     @inject(TYPES.ProblemController)
     private problemController: ProblemController,
     @inject(TYPES.ProblemValidator) private problemValidator: ProblemValidator,
-    @inject(TYPES.JwtTokenValidator) private jwtValidator: JwtTokenValidator,
+    @inject(TYPES.JwtTokenValidator) private jwtValidator: JwtTokenValidator
   ) {
     this.problemRouter = Router();
     this.setupRoutes();
@@ -29,53 +29,53 @@ export class ProblemRoutes {
 
   private setupRoutes() {
     this.problemRouter.post(
-      '/createProblem',
+      "/createProblem",
       this.authLimiter,
       this.jwtValidator.validateJwtToken,
       this.problemValidator.validateProblemInput,
-      this.authMiddleware.authenticate('ACCESS'),
+      this.authMiddleware.authenticate("ACCESS"),
       this.authMiddleware.checkAdminRole,
       this.catchAsyncHandler.handle(
         this.problemController.createProblem.bind(this.problemController)
       )
     );
     this.problemRouter.get(
-      '/getAllProblems',
+      "/getAllProblems",
       this.authLimiter,
       this.jwtValidator.validateJwtToken,
-      this.authMiddleware.authenticate('ACCESS'),
+      this.authMiddleware.authenticate("ACCESS"),
       this.catchAsyncHandler.handle(
         this.problemController.getAllProblems.bind(this.problemController)
       )
     );
     this.problemRouter.get(
-      '/getProblemById/:id',
+      "/getProblemById/:id",
       this.authLimiter,
       this.jwtValidator.validateJwtToken,
       this.problemValidator.validateProblemId,
-      this.authMiddleware.authenticate('ACCESS'),
+      this.authMiddleware.authenticate("ACCESS"),
       this.catchAsyncHandler.handle(
         this.problemController.getProblemById.bind(this.problemController)
       )
     );
     this.problemRouter.put(
-      '/updateProblem/:id',
+      "/updateProblem/:id",
       this.authLimiter,
       this.jwtValidator.validateJwtToken,
       this.problemValidator.validateProblemId,
       this.problemValidator.validateProblemInput,
-      this.authMiddleware.authenticate('ACCESS'),
+      this.authMiddleware.authenticate("ACCESS"),
       this.authMiddleware.checkAdminRole,
       this.catchAsyncHandler.handle(
         this.problemController.updateProblem.bind(this.problemController)
       )
     );
     this.problemRouter.delete(
-      '/deleteProblem/:id',
+      "/deleteProblem/:id",
       this.authLimiter,
       this.jwtValidator.validateJwtToken,
       this.problemValidator.validateProblemId,
-      this.authMiddleware.authenticate('ACCESS'),
+      this.authMiddleware.authenticate("ACCESS"),
       this.authMiddleware.checkAdminRole,
       this.catchAsyncHandler.handle(
         this.problemController.deleteProblem.bind(this.problemController)

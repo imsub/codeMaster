@@ -6,8 +6,8 @@ declare global {
   }
 }
 
-import { Request, Response, NextFunction } from 'express';
-import { injectable } from 'inversify';
+import {Request, Response, NextFunction} from "express";
+import {injectable} from "inversify";
 
 @injectable()
 export class ResponseMiddleware {
@@ -17,7 +17,7 @@ export class ResponseMiddleware {
     return (req: Request, res: Response, next: NextFunction) => {
       res.sendResponse = function (
         data,
-        message = 'Success',
+        message = "Success",
         statusCode = 200
       ) {
         if (
@@ -26,10 +26,10 @@ export class ResponseMiddleware {
           statusCode > 599
         ) {
           statusCode = 500;
-          message = 'Invalid status code';
+          message = "Invalid status code";
         }
         return res.status(statusCode).json({
-          status: statusCode < 400 ? 'success' : 'error',
+          status: statusCode < 400 ? "success" : "error",
           data: data || null,
           message,
           timestamp: new Date().toISOString(),

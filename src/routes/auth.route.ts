@@ -1,11 +1,11 @@
-import { injectable, inject } from 'inversify';
-import { Router } from 'express';
-import { TYPES } from '../types/index';
-import { AuthController } from '../controllers';
-import { CatchAsync } from '../utils';
-import { AuthMiddleware } from '../middlewares';
-import rateLimit from 'express-rate-limit';
-import { AuthValidator , JwtTokenValidator } from '../validators';
+import {injectable, inject} from "inversify";
+import {Router} from "express";
+import {TYPES} from "../types/index";
+import {AuthController} from "../controllers";
+import {CatchAsync} from "../utils";
+import {AuthMiddleware} from "../middlewares";
+import rateLimit from "express-rate-limit";
+import {AuthValidator, JwtTokenValidator} from "../validators";
 
 @injectable()
 export class AuthRoutes {
@@ -20,7 +20,7 @@ export class AuthRoutes {
     @inject(TYPES.AuthMiddleware) private authMiddleware: AuthMiddleware,
     @inject(TYPES.CatchAsync) private catchAsyncHandler: CatchAsync,
     @inject(TYPES.AuthValidator) private authValidator: AuthValidator,
-    @inject(TYPES.JwtTokenValidator) private jwtValidator: JwtTokenValidator,
+    @inject(TYPES.JwtTokenValidator) private jwtValidator: JwtTokenValidator
   ) {
     this.authRouter = Router();
     this.setupRoutes();
@@ -28,7 +28,7 @@ export class AuthRoutes {
 
   private setupRoutes() {
     this.authRouter.post(
-      '/register',
+      "/register",
       this.authLimiter,
       this.authValidator.validateRegister,
       this.catchAsyncHandler.handle(
@@ -36,7 +36,7 @@ export class AuthRoutes {
       )
     );
     this.authRouter.get(
-      '/login',
+      "/login",
       this.authLimiter,
       this.authValidator.validateLogin,
       this.catchAsyncHandler.handle(
@@ -44,27 +44,27 @@ export class AuthRoutes {
       )
     );
     this.authRouter.get(
-      '/logout',
+      "/logout",
       this.authLimiter,
       this.jwtValidator.validateJwtToken,
       this.authValidator.validateLogout,
-      this.authMiddleware.authenticate('ACCESS'),
+      this.authMiddleware.authenticate("ACCESS"),
       this.catchAsyncHandler.handle(
         this.authController.logout.bind(this.authController)
       )
     );
 
     this.authRouter.get(
-      '/refreshToken',
+      "/refreshToken",
       this.authLimiter,
       this.authValidator.validateRefreshToken,
-      this.authMiddleware.authenticate('REFRESH'),
+      this.authMiddleware.authenticate("REFRESH"),
       this.catchAsyncHandler.handle(
         this.authController.refreshToken.bind(this.authController)
       )
     );
     this.authRouter.post(
-      '/forgotPassword',
+      "/forgotPassword",
       this.authLimiter,
       this.authValidator.validateForgotPassword,
       this.catchAsyncHandler.handle(
@@ -72,7 +72,7 @@ export class AuthRoutes {
       )
     );
     this.authRouter.patch(
-      '/verifyForgotPassword/:token',
+      "/verifyForgotPassword/:token",
       this.authLimiter,
       this.authValidator.validateResetPassword,
       this.catchAsyncHandler.handle(
@@ -80,7 +80,7 @@ export class AuthRoutes {
       )
     );
     this.authRouter.post(
-      '/verifyEmail/:token',
+      "/verifyEmail/:token",
       this.authLimiter,
       this.authValidator.validateVerifyEmail,
       this.catchAsyncHandler.handle(
@@ -88,30 +88,30 @@ export class AuthRoutes {
       )
     );
     this.authRouter.get(
-      '/resendEmailVerification',
+      "/resendEmailVerification",
       this.authLimiter,
       this.jwtValidator.validateJwtToken,
       this.authValidator.validateResendEmailVerification,
-      this.authMiddleware.authenticate('ACCESS'),
+      this.authMiddleware.authenticate("ACCESS"),
       this.catchAsyncHandler.handle(
         this.authController.resendEmailVerification.bind(this.authController)
       )
     );
     this.authRouter.patch(
-      '/changeCurrentPassword',
+      "/changeCurrentPassword",
       this.authLimiter,
       this.jwtValidator.validateJwtToken,
       this.authValidator.validateChangeCurrentPassword,
-      this.authMiddleware.authenticate('ACCESS'),
+      this.authMiddleware.authenticate("ACCESS"),
       this.catchAsyncHandler.handle(
         this.authController.changeCurrentPassword.bind(this.authController)
       )
     );
     this.authRouter.get(
-      '/profile',
+      "/profile",
       this.authLimiter,
       this.jwtValidator.validateJwtToken,
-      this.authMiddleware.authenticate('ACCESS'),
+      this.authMiddleware.authenticate("ACCESS"),
       this.catchAsyncHandler.handle(
         this.authController.getProfile.bind(this.authController)
       )
