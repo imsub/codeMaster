@@ -53,7 +53,7 @@ export class AuthService {
     return !!user;
   }
   async getRecordByMultipleFields(where?: any): Promise<User | null> {
-    const user = await this.userRepository.findFirst(where);
+    const user = await this.userRepository.findFirst({where});
     return user;
   }
 

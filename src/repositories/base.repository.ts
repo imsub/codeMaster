@@ -70,8 +70,8 @@ export class BaseRepository<
     this.modelDelegate = modelDelegate;
   }
 
-  async create(data: TCreateInput): Promise<TModel> {
-    return this.modelDelegate.create({data});
+  async create(args: {data: TCreateInput}): Promise<TModel> {
+    return this.modelDelegate.create({data:args.data});
   }
 
   async findById(
