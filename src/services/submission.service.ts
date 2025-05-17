@@ -9,7 +9,7 @@ import {SubmissionRepository} from "../repositories";
 export class SubmissionService {
   constructor(
     @inject(TYPES.CacheManager) private cacheManager: CacheManager,
-    @inject(TYPES.ProblemRepository)
+    @inject(TYPES.SubmissionRepository)
     private submissionRepository: SubmissionRepository
   ) {}
 
@@ -51,5 +51,14 @@ export class SubmissionService {
   }
   async storeSubmission(payload: any): Promise<Submission> {
     return this.submissionRepository.create(payload);
+  }
+  async findUnique(query: {where: any; include: any}): Promise<Submission> {
+    const submission = await this.submissionRepository.findById(query.where, {
+      include: query.include,
+    });
+    if (!submission) {
+      throw new CustomError("Submission not found", 404);
+    }
+    return submission;
   }
 }

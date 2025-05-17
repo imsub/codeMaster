@@ -6,7 +6,6 @@ import {
   PrismaClient,
   Prisma,
 } from "../../prisma/generated/prisma/index.js";
-import {CustomError} from "../utils/errors";
 
 @injectable()
 export class SubmissionRepository extends BaseRepository<

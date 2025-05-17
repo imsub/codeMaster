@@ -7,3 +7,4 @@ export * from "./executeCode.service";
 export * from "./playlist.service";
 export * from "./problemInPlaylist.service";
 export * from "./problemSolved.service";
+export * from "./testCaseResult.service";

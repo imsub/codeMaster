@@ -1,6 +1,6 @@
 import {injectable, inject} from "inversify";
 import {TYPES} from "../types";
-import {User , Prisma} from "../../prisma/generated/prisma/index";
+import {User, Prisma} from "../../prisma/generated/prisma/index";
 import {CustomError} from "../utils/errors";
 import {CacheManager} from "../utils";
 import {PrismaClient} from "@prisma/client";
@@ -97,7 +97,10 @@ export class AuthService {
       throw new CustomError("User not found", 404);
     }
     const {id, ...safeUser} = data;
-    const updatedUser = await this.userRepository.update(id as any, safeUser as any);
+    const updatedUser = await this.userRepository.update(
+      id as any,
+      safeUser as any
+    );
     if (!updatedUser) {
       throw new CustomError("Failed to update user", 500);
     }

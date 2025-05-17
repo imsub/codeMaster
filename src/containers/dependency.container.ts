@@ -45,6 +45,7 @@ import {
   ExecuteCodeService,
   PlaylistService,
   ProblemSolvedService,
+  TestCaseResultService,
 } from "../services";
 import {
   IUserRepository,
@@ -129,6 +130,10 @@ container
 container
   .bind<SubmissionService>(TYPES.SubmissionService)
   .to(SubmissionService)
+  .inSingletonScope();
+container
+  .bind<TestCaseResultService>(TYPES.TestCaseResultService)
+  .to(TestCaseResultService)
   .inSingletonScope();
 container
   .bind<ProblemService>(TYPES.ProblemService)

@@ -108,6 +108,13 @@ export class BaseRepository<
     return this.modelDelegate.createMany({data});
   }
 
+  /**
+   * Upserts a record (creates if not exists, updates if exists).
+   * @param where - The unique identifier for the record.
+   * @param create - The data to create the record with if it doesn't exist.
+   * @param update - The data to update the record with if it exists.
+   * @returns The created or updated record.
+   */
   async upsert(
     where: TWhereUniqueInput,
     create: TCreateInput,
