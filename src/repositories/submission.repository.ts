@@ -16,7 +16,9 @@ export class SubmissionRepository extends BaseRepository<
   Prisma.SubmissionWhereUniqueInput,
   Prisma.SubmissionFindManyArgs,
   Prisma.SubmissionFindFirstArgs,
-  Prisma.SubmissionCountArgs
+  Prisma.SubmissionCountArgs,
+  Prisma.SubmissionSelect,
+  Prisma.SubmissionInclude
 > {
   constructor(@inject(TYPES.PrismaClient) private prismaClient: PrismaClient) {
     super(prismaClient, prismaClient.submission);

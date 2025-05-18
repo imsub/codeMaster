@@ -17,7 +17,9 @@ export class ProblemSolvedRepository extends BaseRepository<
   Prisma.ProblemSolvedWhereUniqueInput,
   Prisma.ProblemSolvedFindManyArgs,
   Prisma.ProblemSolvedFindFirstArgs,
-  Prisma.ProblemSolvedCountArgs
+  Prisma.ProblemSolvedCountArgs,
+  Prisma.ProblemSolvedSelect,
+  Prisma.ProblemSolvedInclude
 > {
   constructor(@inject(TYPES.PrismaClient) private prismaClient: PrismaClient) {
     super(prismaClient, prismaClient.problemSolved);

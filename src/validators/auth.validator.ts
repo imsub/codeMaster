@@ -154,7 +154,7 @@ export class AuthValidator {
   }
   @LogDecorator.LogMethod()
   validateResetPassword(req: Request, res: Response, next: NextFunction): void {
-    const {token} = req.params ?? req.body;
+    const {token} = req.params;
     const tokenSchema = Joi.object({
       token: Joi.string()
         .pattern(/^[0-9a-f]{40}$/i)

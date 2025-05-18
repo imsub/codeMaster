@@ -3,7 +3,7 @@ import {TYPES} from "../types";
 import winston from "winston";
 import {container} from "../containers/index";
 import {CustomError} from "./errors";
-
+import util from "util";
 import {createLogger, format, transports} from "winston";
 /**
  * Decorator for logging method execution
@@ -28,21 +28,12 @@ export class LogDecorator {
         const className = target.constructor.name;
         const methodName = propertyKey.toString();
         const safeStringify = (obj: any): string => {
-          const seen = new WeakSet();
-          return JSON.stringify(obj, function (key, value) {
-            if (typeof value === "object" && value !== null) {
-              if (seen.has(value)) {
-                return "[Circular]";
-              }
-              seen.add(value);
-            }
-            return value;
+          return util.inspect(obj, {
+            showHidden: false,
+            depth: 3,
+            colors: false,
           });
         };
-        // const argsStr = args.map((arg ,index)=>{
-        //   !index ? JSON.stringify(args[index]?.baseUrl) :
-        //   JSON.stringify(arg)
-        // }).join(', ');
         const argsStr = args.map(arg => safeStringify(arg)).join(", ");
         logger.debug(
           `[${className}.${methodName}] Called with args: ${argsStr}`
@@ -63,7 +54,7 @@ export class LogDecorator {
               .catch(err => {
                 const duration = Date.now() - start;
                 logger.error(
-                  `[${className}.${methodName}] Failed in ${duration}ms: ${err}`
+                  `[${className}.${methodName}] Failed in ${duration}ms: ${err.message}`
                 );
                 throw err;
               });

@@ -39,7 +39,7 @@ export class AuthService {
     return token;
   }
   async createUser(data: any): Promise<User> {
-    const result: User = await this.userRepository.create(data);
+    const result: User = await this.userRepository.create({data});
     await this.cacheManager.setCache(
       `User:${result.id}`,
       JSON.stringify(result),
@@ -91,21 +91,34 @@ export class AuthService {
       throw new CustomError("Failed to blacklist token", 500, error);
     }
   }
-  async updateUser(data: User): Promise<User> {
-    const user = await this.userRepository.findById(data.id as any);
-    if (!user) {
-      throw new CustomError("User not found", 404);
-    }
-    const {id, ...safeUser} = data;
+  async updateUser(id: string, params: string): Promise<User> {
     const updatedUser = await this.userRepository.update(
-      id as any,
-      safeUser as any
+      {id} as any,
+      params as any
     );
     if (!updatedUser) {
       throw new CustomError("Failed to update user", 500);
     }
     return updatedUser;
   }
+  // async updateUser(query: {where: Prisma.UserWhereUniqueInput; include: any}): Promise<User> {
+  //   const user = await this.userRepository.findById(query.where, {
+  //     include: query.include,
+  //   });
+  //   if (!user) {
+  //     throw new CustomError("User not found", 404);
+  //   }
+  //   const {id} = query.where;
+  //   const {...safeUser} = query.include;
+  //   const updatedUser = await this.userRepository.update(
+  //     id as any,
+  //     safeUser as any
+  //   );
+  //   if (!updatedUser) {
+  //     throw new CustomError("Failed to update user", 500);
+  //   }
+  //   return updatedUser;
+  // }
   async deleteUser(id: string): Promise<void> {
     const user = await this.userRepository.findById(id as any);
     if (!user) {

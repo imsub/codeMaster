@@ -17,7 +17,9 @@ export class TestCaseResultRepository extends BaseRepository<
   Prisma.TestCaseResultWhereUniqueInput,
   Prisma.TestCaseResultFindManyArgs,
   Prisma.TestCaseResultFindFirstArgs,
-  Prisma.TestCaseResultCountArgs
+  Prisma.TestCaseResultCountArgs,
+  Prisma.TestCaseResultSelect,
+  Prisma.TestCaseResultInclude
 > {
   constructor(@inject(TYPES.PrismaClient) private prismaClient: PrismaClient) {
     super(prismaClient, prismaClient.testCaseResult);

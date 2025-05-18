@@ -60,16 +60,18 @@ export class ProblemController {
     }
 
     const newProblem = await this.problemService.createProblem({
-      title,
-      description,
-      difficulty,
-      tags,
-      examples,
-      constraints,
-      testCases,
-      codeSnippet,
-      referenceSolution,
-      userId: req?.user?.id,
+      data: {
+        title,
+        description,
+        difficulty,
+        tags,
+        examples,
+        constraints,
+        testCases,
+        codeSnippet,
+        referenceSolution,
+        userId: req?.user?.id,
+      },
     });
     (res as Response).sendResponse(
       newProblem,
@@ -88,7 +90,12 @@ export class ProblemController {
 
   @LogDecorator.LogMethod()
   async getProblemById(req: Request, res: Response) {
-    const problem = await this.problemService.getProblemById(req.params.id);
+    const problem = await this.problemService.getProblemById({
+      where: {
+        id: req.params.id,
+      },
+      include: {},
+    });
     if (!problem) {
       throw new CustomError("Problem not found", 404);
     }
@@ -109,7 +116,12 @@ export class ProblemController {
       codeSnippet,
     } = req.body;
     const {id} = req.params;
-    const problem = await this.problemService.getProblemById(id);
+    const problem = await this.problemService.getProblemById({
+      where: {
+        id,
+      },
+      include: {},
+    });
     if (!problem) {
       throw new CustomError("Problem not found", 404);
     }
@@ -166,7 +178,12 @@ export class ProblemController {
   @LogDecorator.LogMethod()
   async deleteProblem(req: Request, res: Response) {
     const {id} = req.params;
-    const problem = await this.problemService.getProblemById(id);
+    const problem = await this.problemService.getProblemById({
+      where: {
+        id,
+      },
+      include: {},
+    });
     if (!problem) {
       throw new CustomError("Problem not found", 404);
     }
@@ -200,7 +217,9 @@ export class ProblemController {
 
   @LogDecorator.LogMethod()
   async getProblem(req: Request, res: Response) {
-    const problem = await this.problemService.getProblemById(req.params.id);
+    const problem = await this.problemService.getProblemById(
+      req.params.id as any
+    );
     res.json(problem);
   }
 }

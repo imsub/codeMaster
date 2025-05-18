@@ -16,7 +16,9 @@ export class UserRepository extends BaseRepository<
   Prisma.UserWhereUniqueInput,
   Prisma.UserFindManyArgs,
   Prisma.UserFindFirstArgs,
-  Prisma.UserCountArgs
+  Prisma.UserCountArgs,
+  Prisma.UserSelect,
+  Prisma.UserInclude
 > {
   constructor(@inject(TYPES.PrismaClient) private prismaClient: PrismaClient) {
     super(prismaClient, prismaClient.user);

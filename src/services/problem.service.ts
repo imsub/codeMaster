@@ -35,14 +35,14 @@ export class ProblemService {
   }
 
   async deleteProblem(id: string): Promise<Problem> {
-    const problem = await this.problemRepository.delete(id as any);
+    const problem = await this.problemRepository.delete({id});
     if (!problem) throw new CustomError("Problem not found", 404);
     await this.cacheManager.deleteCache(`problem:${id}`);
     return problem;
   }
 
   async updateProblem(id: string, data: any): Promise<Problem> {
-    const problem = await this.problemRepository.update(id as any, data);
+    const problem = await this.problemRepository.update({id}, data);
     if (!problem) throw new CustomError("Problem not found", 404);
     await this.cacheManager.setCache(
       `problem:${id}`,
@@ -51,14 +51,18 @@ export class ProblemService {
     );
     return problem;
   }
-
-  async getProblemById(id: string): Promise<Problem | null> {
-    const cached = await this.cacheManager.getCache(`problem:${id}`);
-    if (cached) return JSON.parse(cached);
-    const problem = await this.problemRepository.findById(id as any);
+  async getProblemById(query: {
+    where: any;
+    include: any;
+  }): Promise<Problem | null> {
+    // const cached = await this.cacheManager.getCache(`problem:${query.where.id}`);
+    // if (cached) return JSON.parse(cached);
+    const problem = await this.problemRepository.findById(query.where, {
+      include: query.include,
+    });
     if (!problem) throw new CustomError("Problem not found", 404);
     await this.cacheManager.setCache(
-      `problem:${id}`,
+      `problem:${query.where.id}`,
       JSON.stringify(problem),
       3600
     );

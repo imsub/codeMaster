@@ -107,6 +107,10 @@ export class AuthController {
       role,
       id,
     });
+    const {email: _email} = req.body;
+    if (_email !== email) {
+      throw new CustomError("Invalid Email", 401);
+    }
     if (!!response) {
       res.clearCookie("accessToken");
       res.clearCookie("refreshToken");
@@ -157,12 +161,14 @@ export class AuthController {
       isEmailVerified: false,
     });
     if (!!response) {
-      const result = await this.authService.updateUser({
-        id: response.id,
-        emailVerificationToken: null,
-        emailVerificationExpiry: null,
-        isEmailVerified: true,
-      } as any);
+      const result = await this.authService.updateUser(
+        response.id as any,
+        {
+          emailVerificationToken: null,
+          emailVerificationExpiry: new Date(0),
+          isEmailVerified: true,
+        } as any
+      );
       if (!!result) {
         (res as Response).sendResponse(
           {isEmailVerified: result.isEmailVerified, email: result.email},
@@ -232,11 +238,13 @@ export class AuthController {
     const token = await this.generateTemporaryToken();
     const forgotPasswordToken = token.hashedToken;
     const forgotPasswordExpiry = token.tokenExpiry;
-    const result = await this.authService.updateUser({
-      id: _userInfo.id,
-      forgotPasswordToken,
-      forgotPasswordExpiry,
-    } as any);
+    const result = await this.authService.updateUser(
+      _userInfo.id as any,
+      {
+        forgotPasswordToken,
+        forgotPasswordExpiry,
+      } as any
+    );
     if (!result) {
       throw new CustomError("Password reset failed", 500);
     }
@@ -273,12 +281,14 @@ export class AuthController {
       isEmailVerified: true,
     });
     if (!!response) {
-      const result = await this.authService.updateUser({
-        id: response.id,
-        forgotPasswordToken: null,
-        forgotPasswordExpiry: null,
-        password: hashedPassword,
-      } as any);
+      const result = await this.authService.updateUser(
+        response.id as any,
+        {
+          forgotPasswordToken: null,
+          forgotPasswordExpiry: null,
+          password: hashedPassword,
+        } as any
+      );
       if (!!result) {
         (res as Response).sendResponse(
           {email: result.email},
@@ -305,11 +315,13 @@ export class AuthController {
     const token = await this.generateTemporaryToken();
     const emailVerificationToken = token.hashedToken;
     const emailVerificationExpiry = token.tokenExpiry;
-    const result = await this.authService.updateUser({
-      id: _userInfo.id,
-      emailVerificationToken,
-      emailVerificationExpiry,
-    } as any);
+    const result = await this.authService.updateUser(
+      _userInfo.id as any,
+      {
+        emailVerificationToken,
+        emailVerificationExpiry,
+      } as any
+    );
     if (!result) {
       throw new CustomError("Email verification failed", 500);
     }
@@ -352,10 +364,13 @@ export class AuthController {
         newPassword,
         Number(process.env.SALT_ROUNDS) || 5
       );
-      const result = await this.authService.updateUser({
-        id: response.id,
-        password: hashedPassword,
-      } as any);
+      const result = await this.authService.updateUser(
+        response.id as any,
+        {
+          password: hashedPassword,
+        } as any
+      );
+
       if (!!result) {
         (res as Response).sendResponse(
           {email: result.email},
@@ -371,10 +386,14 @@ export class AuthController {
   }
   @LogDecorator.LogMethod()
   async getProfile(req: Request, res: Response) {
-    const {id} = req.user || {};
+    const {id, email} = req.user || {};
     const response = await this.authService.getRecordByMultipleFields({
       id,
     });
+    const {email: _email} = req.body;
+    if (_email !== email) {
+      throw new CustomError("Invalid Email", 401);
+    }
     if (!!response) {
       (res as Response).sendResponse(
         {email: response.email, role: response.role},

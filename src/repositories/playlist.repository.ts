@@ -17,7 +17,9 @@ export class PlaylistRepository extends BaseRepository<
   Prisma.PlaylistWhereUniqueInput,
   Prisma.PlaylistFindManyArgs,
   Prisma.PlaylistFindFirstArgs,
-  Prisma.PlaylistCountArgs
+  Prisma.PlaylistCountArgs,
+  Prisma.PlaylistSelect,
+  Prisma.PlaylistInclude
 > {
   constructor(@inject(TYPES.PrismaClient) private prismaClient: PrismaClient) {
     super(prismaClient, prismaClient.playlist);

@@ -17,7 +17,9 @@ export class ProblemInPlaylistRepository extends BaseRepository<
   Prisma.ProblemInPlaylistWhereUniqueInput,
   Prisma.ProblemInPlaylistFindManyArgs,
   Prisma.ProblemInPlaylistFindFirstArgs,
-  Prisma.ProblemInPlaylistCountArgs
+  Prisma.ProblemInPlaylistCountArgs,
+  Prisma.ProblemInPlaylistSelect,
+  Prisma.ProblemInPlaylistInclude
 > {
   constructor(@inject(TYPES.PrismaClient) private prismaClient: PrismaClient) {
     super(prismaClient, prismaClient.problemInPlaylist);
