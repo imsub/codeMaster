@@ -1,10 +1,6 @@
-node_modules
+backend/node_modules
 # Keep environment variables out of version control
-.env
-
-.early.coverage
-prisma/generated
-demo
-src3
+backend/.env
+backend/prisma/generated
 logs
 dist

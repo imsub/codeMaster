@@ -1,7 +1,6 @@
 import {injectable, inject} from "inversify";
 import {Request, Response} from "express";
 import {TYPES} from "../types";
-import {IAuthService} from "../interfaces";
 import {AuthService} from "../services";
 import {CustomError} from "../utils/errors";
 import {LogDecorator} from "../utils/decorator";
@@ -12,9 +11,7 @@ import {
   emailVerificationMailgenContent,
   forgotPasswordMailgenContent,
 } from "../utils";
-/**
- * Controller class for authentication endpoints
- */
+
 @injectable()
 export class AuthController {
   constructor(@inject(TYPES.AuthService) private authService: AuthService) {}

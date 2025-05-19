@@ -4,9 +4,7 @@ import {TYPES} from "../types";
 import {CustomError} from "../utils/errors";
 import {LogDecorator} from "../utils";
 import {ProblemService, Judge0Service} from "../services";
-/**
- * Controller class for problem endpoints
- */
+
 @injectable()
 export class ProblemController {
   constructor(

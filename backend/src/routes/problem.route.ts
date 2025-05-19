@@ -81,17 +81,17 @@ export class ProblemRoutes {
         this.problemController.deleteProblem.bind(this.problemController)
       )
     );
-    // this.problemRouter.get(
-    //   '/getSolvedProblems',
-    //   this.authLimiter,
-    //   this.jwtValidator.validateJwtToken,
-    //   this.authMiddleware.authenticate('ACCESS'),
-    //   this.catchAsyncHandler.handle(
-    //     this.problemController.getAllProblemsSolvedByUser.bind(
-    //       this.problemController
-    //     )
-    //   )
-    // );
+    this.problemRouter.get(
+      '/getSolvedProblems',
+      this.authLimiter,
+      this.jwtValidator.validateJwtToken,
+      this.authMiddleware.authenticate('ACCESS'),
+      this.catchAsyncHandler.handle(
+        this.problemController.getAllProblemsSolvedByUser.bind(
+          this.problemController
+        )
+      )
+    );
   }
 
   getRouter(): Router {

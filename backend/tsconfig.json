@@ -5,7 +5,7 @@
     "declaration": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "outDir": "dist",
+    "outDir": "backend/dist",
     "listFiles": true,
     // "noImplicitHelpers": false,
     "alwaysStrict": true,
@@ -28,7 +28,7 @@
   // ],
   "exclude": [
     "node_modules", // Already ignored by default
-    "dist", // Ignore the output directory
+    "backend/dist", // Ignore the output directory
     "src/tests", // Ignore the tests folder
     "src/legacy", // Ignore the legacy folder
     "src/**/*.spec.ts", // Ignore all .spec.ts files (e.g., test files)
