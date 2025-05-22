@@ -52,11 +52,7 @@ export class App {
   }
 
   private setupRoutes() {
-    //this.app.use('/api/v1/healthcheck',healthCheckRouter.getRouter());
     this.app.use("/api/v1", this.router.getRouter());
-    // this.app.use('/auth', this.authRoutes.getRouter());
-    // this.app.use('/users', this.userRoutes.getRouter());
-    // this.app.use('/problems', this.problemRoutes.getRouter());
   }
 
   private setupErrorHandling() {
