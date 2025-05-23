@@ -1,9 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-   skipTrailingSlashRedirect: true,
-   skipMiddlewareUrlNormalize: true,
-   experimental: {
+  skipTrailingSlashRedirect: true,
+  skipMiddlewareUrlNormalize: true,
+  experimental: {
     //nodeMiddleware: true,
     //ppr: 'incremental',
   },
@@ -12,11 +12,10 @@ const nextConfig: NextConfig = {
 
 export default nextConfig;
 
- 
 // import { PHASE_DEVELOPMENT_SERVER } from 'next/constants';
 // import type { NextConfig } from 'next';
 // import type { NextConfigComplete } from 'next/dist/server/config-shared';
- 
+
 // interface ConfigContext {
 //   defaultConfig: NextConfigComplete;
 // }

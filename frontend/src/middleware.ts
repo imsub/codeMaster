@@ -5,9 +5,9 @@ export function middleware(request: NextRequest /*, event: NextFetchEvent*/) {
   const token = request.cookies.get("accessToken");
   console.log("Token:", token);
   console.log("Request URL:", request.url);
-  if (!token) {
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
+  // if (!token) {
+  //   return NextResponse.redirect(new URL("/login", request.url));
+  // }
 
   return NextResponse.next();
 }

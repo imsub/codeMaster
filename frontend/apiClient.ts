@@ -20,7 +20,10 @@ class ApiClient {
     };
   }
 
-  async customFetch<T>(endpoint: string, options: FetchOptions = {}): Promise<ApiResponse<T>> {
+  async customFetch<T>(
+    endpoint: string,
+    options: FetchOptions = {},
+  ): Promise<ApiResponse<T>> {
     try {
       const url = `${this.baseURL}${endpoint}`;
       const headers = { ...this.defaultHeaders, ...options.headers };

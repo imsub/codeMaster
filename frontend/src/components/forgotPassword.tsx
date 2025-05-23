@@ -2,7 +2,7 @@
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Code } from "lucide-react";
+import { Code, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -16,7 +16,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import Link from "next/link";
-
+import { useRouter } from "next/navigation"; // or 'next/router' for Pages Router
 const loginSchema = z.object({
   email: z.string().email({ message: "Invalid email" }),
   password: z
@@ -27,7 +27,7 @@ const loginSchema = z.object({
     }),
 });
 
-export function LoginForm({
+export function ForgotPasswordForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
@@ -35,7 +35,6 @@ export function LoginForm({
     resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
-      password: "",
     },
   });
 
@@ -43,17 +42,29 @@ export function LoginForm({
     console.log(values);
     // call your login logic here
   }
-
+  const router = useRouter();
   return (
     <div className={className} {...props}>
       <Card className="mx-auto max-w-md">
-        <CardHeader className="pb-9 text-center">
-          <div className="flex items-center justify-center mb-6">
-            <div className="w-12 h-12 rounded-xl bg-primary/10  flex items-center justify-center">
-              <Code className="w-6 h-6 text-blue-600/100 dark:text-sky-400/100 hover:text-green-600 dark:hover:text-green-400" />
+        <CardHeader className="pb-6 text-center">
+          <div className="flex items-center justify-center mb-4">
+            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+              <Code className="w-6 h-6 text-blue-600 dark:text-sky-400 hover:text-green-600 dark:hover:text-green-400" />
             </div>
           </div>
-          <CardTitle className="text-2xl text-center">Login</CardTitle>
+          <CardTitle className="text-2xl font-semibold mb-2">
+            Forgot Password
+          </CardTitle>
+
+          <div className="flex justify-center">
+            <button
+              onClick={() => router.back()}
+              className="inline-flex items-center gap-2 px-4 py-2 mt-2 rounded-md border border-zinc-700 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-violet-500"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back
+            </button>
+          </div>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -80,39 +91,8 @@ export function LoginForm({
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col gap-2">
-                    <div className="flex items-center">
-                      <FormLabel className="inline-flex items-center gap-4">
-                        Password <span className="text-red-500">*</span>
-                      </FormLabel>
-
-                      <Link
-                        className="hover:underline ml-auto inline-block text-sm underline-offset-4"
-                        href="/forgotPassword"
-                      >
-                        Forgot your password?
-                      </Link>
-                    </div>
-                    <FormControl>
-                      <Input
-                        className="w-full p-2 rounded-md bg-zinc-900 text-white placeholder:text-sm placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-violet-500"
-                        type="password"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage className="text-red-500" />
-                  </FormItem>
-                )}
-              />
               <Button type="submit" className="w-full">
-                Login
-              </Button>
-              <Button variant="outline" className="w-full">
-                Login with Google
+                Reset my password
               </Button>
             </form>
           </Form>

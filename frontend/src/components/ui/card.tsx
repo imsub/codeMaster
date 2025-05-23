@@ -1,6 +1,6 @@
-import * as React from "react"
+import * as React from "react";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 function Card({ className, ...props }: React.ComponentProps<"div">) {
   return (
@@ -8,11 +8,11 @@ function Card({ className, ...props }: React.ComponentProps<"div">) {
       data-slot="card"
       className={cn(
         "tw-bg-card tw-text-card-foreground tw-flex tw-flex-col tw-gap-6 tw-rounded-xl tw-border tw-py-6 tw-shadow-sm",
-        className
+        className,
       )}
       {...props}
     />
-  )
+  );
 }
 
 function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
@@ -21,11 +21,11 @@ function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
       data-slot="card-header"
       className={cn(
         "tw-@container/card-header tw-grid tw-auto-rows-min tw-grid-rows-[auto_auto] tw-items-start tw-gap-1.5 tw-px-6 has-data-[slot=card-action]:tw-grid-cols-[1fr_auto] [.border-b]:tw-pb-6",
-        className
+        className,
       )}
       {...props}
     />
-  )
+  );
 }
 
 function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
@@ -35,7 +35,7 @@ function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
       className={cn("tw-leading-none tw-font-semibold", className)}
       {...props}
     />
-  )
+  );
 }
 
 function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
@@ -45,7 +45,7 @@ function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
       className={cn("tw-text-muted-foreground tw-text-sm", className)}
       {...props}
     />
-  )
+  );
 }
 
 function CardAction({ className, ...props }: React.ComponentProps<"div">) {
@@ -54,11 +54,11 @@ function CardAction({ className, ...props }: React.ComponentProps<"div">) {
       data-slot="card-action"
       className={cn(
         "tw-col-start-2 tw-row-span-2 tw-row-start-1 tw-self-start tw-justify-self-end",
-        className
+        className,
       )}
       {...props}
     />
-  )
+  );
 }
 
 function CardContent({ className, ...props }: React.ComponentProps<"div">) {
@@ -68,17 +68,20 @@ function CardContent({ className, ...props }: React.ComponentProps<"div">) {
       className={cn("tw-px-6", className)}
       {...props}
     />
-  )
+  );
 }
 
 function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="card-footer"
-      className={cn("tw-flex tw-items-center tw-px-6 [.border-t]:tw-pt-6", className)}
+      className={cn(
+        "tw-flex tw-items-center tw-px-6 [.border-t]:tw-pt-6",
+        className,
+      )}
       {...props}
     />
-  )
+  );
 }
 
 export {
@@ -89,4 +92,4 @@ export {
   CardAction,
   CardDescription,
   CardContent,
-}
+};
