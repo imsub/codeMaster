@@ -35,7 +35,7 @@ export class AuthRoutes {
         this.authController.register.bind(this.authController)
       )
     );
-    this.authRouter.get(
+    this.authRouter.post(
       "/login",
       this.authLimiter,
       this.authValidator.validateLogin,

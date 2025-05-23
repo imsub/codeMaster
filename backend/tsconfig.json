@@ -5,7 +5,7 @@
     "declaration": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "outDir": "backend/dist",
+    "outDir": "dist",
     "listFiles": true,
     // "noImplicitHelpers": false,
     "alwaysStrict": true,
