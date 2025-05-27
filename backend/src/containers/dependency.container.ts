@@ -17,6 +17,7 @@ import {
   SubmissionValidator,
   JwtTokenValidator,
   ExecuteCodeValidator,
+  PlaylistValidator,
 } from "../validators";
 import {
   UserRepository,
@@ -32,6 +33,7 @@ import {
   ProblemController,
   SubmissionController,
   ExecuteCodeController,
+  PlaylistController,
 } from "../controllers";
 import {CatchAsync, LoggerFactory, CacheManager} from "../utils";
 import {PrismaClient} from "../../prisma/generated/prisma/index.js";
@@ -182,12 +184,20 @@ container
   .to(ProblemController)
   .inSingletonScope();
 container
+  .bind<PlaylistController>(TYPES.PlaylistController)
+  .to(PlaylistController)
+  .inSingletonScope();
+container
   .bind<AuthValidator>(TYPES.AuthValidator)
   .to(AuthValidator)
   .inSingletonScope();
 container
   .bind<ProblemValidator>(TYPES.ProblemValidator)
   .to(ProblemValidator)
+  .inSingletonScope();
+container
+  .bind<PlaylistValidator>(TYPES.PlaylistValidator)
+  .to(PlaylistValidator)
   .inSingletonScope();
 container
   .bind<SubmissionValidator>(TYPES.SubmissionValidator)

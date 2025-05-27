@@ -116,6 +116,15 @@ export class AuthRoutes {
         this.authController.getProfile.bind(this.authController)
       )
     );
+    this.authRouter.get(
+      "/check",
+      this.authLimiter,
+      this.jwtValidator.validateJwtToken,
+      this.authMiddleware.authenticate("ACCESS"),
+      this.catchAsyncHandler.handle(
+        this.authController.check.bind(this.authController)
+      )
+    );
   }
 
   getRouter(): Router {

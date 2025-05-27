@@ -35,10 +35,12 @@ export class App {
   }
 
   private setupMiddleware() {
-    this.app.use(cors({
-      origin: "*",
-      credentials: true,
-    }));
+    this.app.use(
+      cors({
+        origin: "http://localhost:3000",
+        credentials: true, // if you're sending cookies or authorization headers
+      })
+    );
     this.app.use(helmet());
     this.app.use(express.json());
     this.app.use(cookieParser());

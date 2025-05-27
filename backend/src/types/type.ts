@@ -55,5 +55,7 @@ const TYPES = {
   ExecuteCodeValidator: Symbol.for("ExecuteCodeValidator"),
   ProblemSolvedService: Symbol.for("ProblemSolvedService"),
   TestCaseResultService: Symbol.for("TestCaseResultService"),
+  PlaylistController: Symbol.for("PlaylistController"),
+  PlaylistValidator: Symbol.for("PlaylistValidator"),
 };
 export {TYPES};

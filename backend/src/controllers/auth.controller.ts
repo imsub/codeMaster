@@ -52,7 +52,7 @@ export class AuthController {
       subject: "Verify Email",
       mailgenContent: mailContent,
     });
-    (res as Response).sendResponse(null, "User created successfully", 201);
+    res.sendResponse(null, "User created successfully", 201);
   }
 
   @LogDecorator.LogMethod()
@@ -91,8 +91,8 @@ export class AuthController {
 
     (res as Response).sendResponse(
       {id: _userInfo.id, email: _userInfo.email},
-      "User created successfully",
-      201
+      "User Logged in successfully",
+      200
     );
   }
 
@@ -400,5 +400,13 @@ export class AuthController {
     } else {
       throw new CustomError("User not found", 404);
     }
+  }
+  @LogDecorator.LogMethod()
+  async check(req: Request, res: Response) {
+    const {id, email} = req.user || {};
+    if (!id || !email) {
+      throw new CustomError("User not authenticated", 401);
+    }
+    res.sendResponse({id, email}, "User is authenticated", 200);
   }
 }

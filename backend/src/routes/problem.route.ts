@@ -82,10 +82,10 @@ export class ProblemRoutes {
       )
     );
     this.problemRouter.get(
-      '/getSolvedProblems',
+      "/getSolvedProblems",
       this.authLimiter,
       this.jwtValidator.validateJwtToken,
-      this.authMiddleware.authenticate('ACCESS'),
+      this.authMiddleware.authenticate("ACCESS"),
       this.catchAsyncHandler.handle(
         this.problemController.getAllProblemsSolvedByUser.bind(
           this.problemController

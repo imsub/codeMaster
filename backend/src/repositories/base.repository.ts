@@ -31,6 +31,20 @@ type Delegate<
     create: TCreateInput;
     update: TUpdateInput;
   }): Promise<TModel>;
+  deleteMany?: (args: {where: TWhereUniqueInput}) => Promise<{count: number}>;
+  $transaction?: (
+    fn: (tx: Prisma.TransactionClient) => Promise<any>
+  ) => Promise<any>;
+  $disconnect?: () => Promise<void>;
+  $connect?: () => Promise<void>;
+  $use?: (args: Prisma.MiddlewareParams) => Promise<any>;
+  $on?: (
+    event: Prisma.LogLevel | string,
+    callback: (event: any) => void
+  ) => void;
+  $queryRaw?: <T = any>(query: string | Prisma.Sql) => Promise<T>;
+  $executeRaw?: <T = any>(query: string | Prisma.Sql) => Promise<T>;
+  $runCommandRaw?: <T = any>(command: Prisma.JsonObject) => Promise<T>;
 };
 
 @injectable()
@@ -181,5 +195,24 @@ export class BaseRepository<
     callback: (tx: Prisma.TransactionClient) => Promise<R>
   ): Promise<R> {
     return await this.prisma.$transaction(callback);
+  }
+
+  /**
+   * Executes a raw SQL query.
+   * @param query - The SQL query to execute.
+   * @returns The result of the query.
+   */
+  async deleteMany(where: TWhereUniqueInput): Promise<{count: number}> {
+    if (!this.modelDelegate.deleteMany) {
+      throw new CustomError("deleteMany is not supported for this model", 500);
+    }
+    return await this.modelDelegate.deleteMany({where});
+  }
+
+  /**
+   * Closes the Prisma client connection.
+   */
+  async close(): Promise<void> {
+    await this.prisma.$disconnect();
   }
 }
