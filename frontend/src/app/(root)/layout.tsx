@@ -6,7 +6,7 @@ const RootLayout = ({children}:{children:React.ReactNode}) => {
     <>
     
     <Navbar/>
-    <main className='flex justify-center items-center mt-4 container w-full mx-auto'>
+    <main className='flex justify-center items-center w-full'>
         {children}
     </main>
     </>

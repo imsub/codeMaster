@@ -1,172 +1,4 @@
-// import LandingPage from "@/features/main/components/landing-page";
-
-// export default function Home() {
-//   return (
-//     <div className=" bg-background text-foreground container">
-//       <LandingPage />
-//     </div>
-//   );
-// }
-
 "use client";
-// import { useState } from "react";
-
-// export default function Home() {
-//   const [activeLanguage, setActiveLanguage] = useState("python");
-//   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-//   const languages = [
-//     { name: "Python", icon: "🐍" },
-//     { name: "Java", icon: "☕" },
-//     { name: "C++", icon: "⚙️" },
-//   ];
-
-//   const features = [
-//     {
-//       title: "Multi-Language Support",
-//       description: "Solve problems in Python, Java, or C++.",
-//       icon: "💻",
-//     },
-//     {
-//       title: "Curated Problem Sets",
-//       description: "Handpicked DSA problems by difficulty (Easy to Hard).",
-//       icon: "📊",
-//     },
-//     {
-//       title: "Real-Time Feedback",
-//       description: "Instant code execution and debugging.",
-//       icon: "⚡",
-//     },
-//   ];
-
-//   return (
-//     <div className="min-h-screen bg-gray-900 text-white">
-//       {/* Navbar */}
-//       <nav className="container mx-auto p-4 flex justify-between items-center">
-//         <div className="flex items-center space-x-2">
-//           <span className="text-2xl font-bold bg-gradient-to-r from-teal-400 to-blue-500 bg-clip-text text-transparent">
-//             DSArena
-//           </span>
-//         </div>
-//         <div className="hidden md:flex space-x-6">
-//           <a href="#features" className="hover:text-teal-400">
-//             Features
-//           </a>
-//           <a href="#problems" className="hover:text-teal-400">
-//             Problems
-//           </a>
-//           <a href="#about" className="hover:text-teal-400">
-//             About
-//           </a>
-//         </div>
-//         <button className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-//           ☰
-//         </button>
-//         {isMenuOpen && (
-//           <div className="md:hidden absolute top-16 right-4 bg-gray-800 p-4 rounded shadow-lg">
-//             <a href="#features" className="block py-2 hover:text-teal-400">
-//               Features
-//             </a>
-//             <a href="#problems" className="block py-2 hover:text-teal-400">
-//               Problems
-//             </a>
-//             <a href="#about" className="block py-2 hover:text-teal-400">
-//               About
-//             </a>
-//           </div>
-//         )}
-//       </nav>
-
-//       {/* Hero Section */}
-//       <section className="container mx-auto px-4 py-20 text-center">
-//         <h1 className="text-4xl md:text-6xl font-bold mb-4">
-//           Master <span className="text-teal-400">Algorithms</span> in 3 Languages
-//         </h1>
-//         <p className="text-xl md:text-2xl text-gray-300 mb-8">
-//           Code Smarter, Not Harder!
-//         </p>
-//         <div className="flex justify-center space-x-4 mb-12">
-//           <button className="bg-teal-500 hover:bg-teal-600 px-6 py-3 rounded-lg font-semibold">
-//             Start Practicing
-//           </button>
-//           <button className="bg-gray-700 hover:bg-gray-600 px-6 py-3 rounded-lg font-semibold">
-//             Browse Problems
-//           </button>
-//         </div>
-//         <div className="flex justify-center space-x-4">
-//           {languages.map((lang) => (
-//             <button
-//               key={lang.name}
-//               onClick={() => setActiveLanguage(lang.name.toLowerCase())}
-//               className={`flex items-center space-x-2 px-4 py-2 rounded-full ${
-//                 activeLanguage === lang.name.toLowerCase()
-//                   ? "bg-teal-500"
-//                   : "bg-gray-700"
-//               }`}
-//             >
-//               <span>{lang.icon}</span>
-//               <span>{lang.name}</span>
-//             </button>
-//           ))}
-//         </div>
-//       </section>
-
-//       {/* Features Section */}
-//       <section id="features" className="container mx-auto px-4 py-16">
-//         <h2 className="text-3xl font-bold text-center mb-12">Why Choose Us?</h2>
-//         <div className="grid md:grid-cols-3 gap-8">
-//           {features.map((feature, index) => (
-//             <div
-//               key={index}
-//               className="bg-gray-800 p-6 rounded-lg hover:bg-gray-700 transition"
-//             >
-//               <div className="text-4xl mb-4">{feature.icon}</div>
-//               <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-//               <p className="text-gray-300">{feature.description}</p>
-//             </div>
-//           ))}
-//         </div>
-//       </section>
-
-//       {/* Code Preview Section */}
-//       <section id="problems" className="container mx-auto px-4 py-16">
-//         <h2 className="text-3xl font-bold text-center mb-8">
-//           Try a Sample Problem
-//         </h2>
-//         <div className="bg-gray-800 rounded-lg overflow-hidden">
-//           <div className="bg-gray-700 p-4 flex justify-between items-center">
-//             <h3 className="font-semibold">Reverse a Linked List</h3>
-//             <span className="text-sm bg-teal-500 px-3 py-1 rounded-full">
-//               Medium
-//             </span>
-//           </div>
-//           <div className="p-4">
-//             <div className="bg-gray-900 p-4 rounded mb-4">
-//               <pre className="text-green-400">
-//                 {activeLanguage === "python"
-//                   ? "def reverseList(head):\n    prev = None\n    while head:\n        next_node = head.next\n        head.next = prev\n        prev = head\n        head = next_node\n    return prev"
-//                   : activeLanguage === "java"
-//                   ? "public ListNode reverseList(ListNode head) {\n    ListNode prev = null;\n    while (head != null) {\n        ListNode next = head.next;\n        head.next = prev;\n        prev = head;\n        head = next;\n    }\n    return prev;\n}"
-//                   : "ListNode* reverseList(ListNode* head) {\n    ListNode* prev = nullptr;\n    while (head) {\n        ListNode* next = head->next;\n        head->next = prev;\n        prev = head;\n        head = next;\n    }\n    return prev;\n}"}
-//               </pre>
-//             </div>
-//             <button className="bg-teal-500 hover:bg-teal-600 px-6 py-2 rounded-lg font-semibold w-full">
-//               Submit Code
-//             </button>
-//           </div>
-//         </div>
-//       </section>
-
-//       {/* Footer */}
-//       <footer className="bg-gray-800 py-8">
-//         <div className="container mx-auto px-4 text-center">
-//           <p>© 2024 DSArena. Practice DSA in Python, Java, and C++.</p>
-//         </div>
-//       </footer>
-//     </div>
-//   );
-// }
-
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
@@ -178,19 +10,25 @@ import {
   FaGithub,
   FaLinkedin,
 } from "react-icons/fa";
-import { SiCplusplus } from "react-icons/si";
+import {
+  SiJavascript,
+} from "react-icons/si";
+// import { SiCplusplus } from "react-icons/si";
 import Editor from "react-simple-code-editor";
 import "prismjs"; // Core first
 import "prismjs/components/prism-python";
 import "prismjs/components/prism-java";
 import "prismjs/components/prism-c.js"; // C++ after core
+import "prismjs/components/prism-javascript"; // Added
+import "prismjs/components/prism-jsx";        // Recommended for modern JS
 import { highlight, languages } from "prismjs";
+console.log(languages)
 import "prismjs/themes/prism-tomorrow.css";
 import { useMemo } from "react";
 interface Code  {
   python: string;
   java: string;
-  cpp: string;
+  javascript: string;
   [key: string]: string; // Add index signature for string keys
 }
 const LandingPage = () => {
@@ -205,8 +43,8 @@ const LandingPage = () => {
         "def reverseList(head):\n    prev = None\n    while head:\n        next_node = head.next\n        head.next = prev\n        prev = head\n        head = next_node\n    return prev",
       java:
         "public ListNode reverseList(ListNode head) {\n    ListNode prev = null;\n    while (head != null) {\n        ListNode next = head.next;\n        head.next = prev;\n        prev = head;\n        head = next;\n    }\n    return prev;\n}",
-      cpp:
-        "ListNode* reverseList(ListNode* head) {\n    ListNode* prev = nullptr;\n    while (head) {\n        ListNode* next = head->next;\n        head->next = prev;\n        prev = head;\n        head = next;\n    }\n    return prev;\n}",
+      javascript:
+        "function reverseList(head) {\n    let prev = null;\n    while (head !== null) {\n        let next = head.next;\n        head.next = prev;\n        prev = head;\n        head = next;\n    }\n    return prev;\n}",
     }),
     []
   );
@@ -243,13 +81,13 @@ const LandingPage = () => {
 
   return (
     <div
-      className={`min-h-screen transition-colors ${
+      className={`min-h-screen w-full transition-colors ${
         darkMode ? "bg-gray-900 text-gray-100" : "bg-gray-50 text-gray-900"
       }`}
     >
       {/* Navbar */}
       <nav
-        className={`fixed w-full z-50 transition-all ${
+        className={`w-full z-50 transition-all ${
           isScrolled
             ? darkMode
               ? "bg-gray-800/90 backdrop-blur"
@@ -298,7 +136,7 @@ const LandingPage = () => {
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 px-6">
+      <section className="pt-32 pb-20 px-6 w-full">
         <div className="container mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -347,13 +185,13 @@ const LandingPage = () => {
             className="flex justify-center space-x-4 mb-20"
           >
             {[
-              { name: "Python", icon: <FaPython /> },
-              { name: "Java", icon: <FaJava /> },
-              { name: "C++", icon: <SiCplusplus /> },
+              { name: "Python", icon: <FaPython /> ,  value: "python"  },
+              { name: "Java", icon: <FaJava /> , value: "java"},
+              { name: "Javascript", icon: <SiJavascript />, value: "javascript" },
             ].map((lang) => (
               <button
                 key={lang.name}
-                onClick={() => setActiveLanguage(lang.name.toLowerCase())}
+                onClick={() => setActiveLanguage(lang.value.toLowerCase())}
                 className={`flex items-center space-x-2 px-6 py-3 rounded-full transition-all ${
                   activeLanguage === lang.name.toLowerCase()
                     ? "bg-teal-500 text-white shadow-md"
@@ -397,8 +235,8 @@ const LandingPage = () => {
                 try {
                   return highlight(
                     code,
-                    languages[activeLanguage],
-                    activeLanguage
+                    languages[activeLanguage.toLowerCase()],
+                    activeLanguage.toLowerCase()
                   );
                 } catch (e) {
                   console.error("Syntax highlighting error:", e);
@@ -598,7 +436,7 @@ const LandingPage = () => {
             } text-center`}
           >
             <p className={`${darkMode ? "text-gray-400" : "text-gray-600"}`}>
-              © 2024 DSArena. All rights reserved.
+              © 2025 Code Duster. All rights reserved.
             </p>
           </div>
         </div>

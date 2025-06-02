@@ -37,7 +37,7 @@ export class App {
   private setupMiddleware() {
     this.app.use(
       cors({
-        origin: "http://localhost:3000",
+        origin: ["http://localhost:3000","http://192.168.29.221:3000"],
         credentials: true, // if you're sending cookies or authorization headers
       })
     );

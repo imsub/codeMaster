@@ -3,11 +3,8 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   skipTrailingSlashRedirect: true,
   skipMiddlewareUrlNormalize: true,
-  experimental: {
-    //nodeMiddleware: true,
-    //ppr: 'incremental',
-  },
-  //runtime: 'nodejs',
+  allowedDevOrigins: ["192.168.29.221", "localhost"], // Add your specific IP
+  experimental: {},
 };
 
 export default nextConfig;
