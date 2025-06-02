@@ -1,16 +1,47 @@
+"use client"
 import { Code, Terminal, FileCode, Braces } from "lucide-react";
-import { useEffect, useState } from "react";
-
-interface CodeBackgroundProps {
-  title: string;
-  subtitle: string;
-}
-
-const CodeBackground: React.FC<CodeBackgroundProps> = ({ title, subtitle }) => {
-  const [activeIndex, setActiveIndex] = useState<number>(0);
-
-  const codeSnippets: string[] = [
-    `function twoSum(nums, target) {
+import { useState, useEffect, useRef } from 'react';
+//import { clearTimeout } from "timers";
+// export interface CodeBackgroundProps {
+//   // existing props
+//   routeName?: string;
+// }
+const codeSnippets: string[] = [
+  `// Binary Search
+function binarySearch(arr, target) {
+  let left = 0;
+  let right = arr.length - 1;
+  while (left <= right) {
+    const mid = Math.floor((left + right) / 2);
+    if (arr[mid] === target) return mid;
+    if (arr[mid] < target) left = mid + 1;
+    else right = mid - 1;
+  }
+  return -1;
+}`,
+  
+  `// Fibonacci Sequence
+function fibonacci(n, memo = {}) {
+  if (n in memo) return memo[n];
+  if (n <= 2) return 1;
+  memo[n] = fibonacci(n - 1, memo) + fibonacci(n - 2, memo);
+  return memo[n];
+}`,
+  
+  `// Quick Sort
+function quickSort(arr) {
+  if (arr.length <= 1) return arr;
+  const pivot = arr[0];
+  const left = [];
+  const right = [];
+  for (let i = 1; i < arr.length; i++) {
+    if (arr[i] < pivot) left.push(arr[i]);
+    else right.push(arr[i]);
+  }
+  return [...quickSort(left), pivot, ...quickSort(right)];
+}`,  
+  `// Two Sum
+function twoSum(nums, target) {
   const map = new Map();
   for (let i = 0; i < nums.length; i++) {
     const complement = target - nums[i];
@@ -21,13 +52,7 @@ const CodeBackground: React.FC<CodeBackgroundProps> = ({ title, subtitle }) => {
   }
   return [];
 }`,
-    `class ListNode {
-  constructor(val = 0, next = null) {
-    this.val = val;
-    this.next = next;
-  }
-}
-
+`// Reverse Link List
 function reverseList(head) {
   let prev = null;
   let current = head;
@@ -39,7 +64,8 @@ function reverseList(head) {
   }
   return prev;
 }`,
-    `function isValid(s) {
+`// Palindrome
+function isValid(s) {
   const stack = [];
   const map = {
     '(': ')',
@@ -57,15 +83,61 @@ function reverseList(head) {
   }
   
   return stack.length === 0;
-}`,
-  ];
+}`
+];
+const CodeBackground: React.FC = () => {
+  const [activeSnippet, setActiveSnippet] = useState(0);
+  const [displayedCode, setDisplayedCode] = useState('');
+  const [cursorVisible, setCursorVisible] = useState(true);
+  const cursorRef = useRef(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const isMountedRef = useRef(false);
 
+  // Typewriter effect
   useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % codeSnippets.length);
-    }, 2000);
-    return () => clearInterval(interval);
-  }, [codeSnippets.length]);
+    isMountedRef.current = true;
+    let charIndex = 0;
+    const snippet = codeSnippets[activeSnippet];
+    
+    const type = () => {
+      if (!isMountedRef.current) return;
+      
+      if (charIndex <= snippet.length) {
+        setDisplayedCode(snippet.substring(0, charIndex));
+        charIndex++;
+        timeoutRef.current = setTimeout(type, Math.random() * 30 + 10);
+      } else {
+        timeoutRef.current = setTimeout(() => {
+          if (isMountedRef.current) {
+            setActiveSnippet((prev) => (prev + 1) % codeSnippets.length);
+          }
+        }, 3000);
+      }
+    };
+
+    type();
+
+    return () => {
+      isMountedRef.current = false;
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, [activeSnippet]);
+
+  // Cursor effect
+  useEffect(() => {
+    isMountedRef.current = true;
+    intervalRef.current = setInterval(() => {
+      if (isMountedRef.current) {
+        setCursorVisible((prev) => !prev);
+      }
+    }, 500);
+
+    return () => {
+      isMountedRef.current = false;
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, []);
 
   return (
     <div className="hidden lg:flex flex-col items-center justify-center text-white p-12 relative overflow-hidden">
@@ -91,40 +163,34 @@ function reverseList(head) {
         </div>
       </div>
 
-      <div className="z-10 max-w-md flex flex-col items-center">
-        {/* Code editor mockup */}
-        <div className="w-full bg-slate-800 rounded-lg shadow-xl mb-8 overflow-hidden">
-          {/* Editor header */}
-          <div className="bg-slate-700 px-4 py-2 flex items-center">
-            <div className="flex space-x-2 mr-4">
-              <div className="w-3 h-3 rounded-full bg-red-500"></div>
-              <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-              <div className="w-3 h-3 rounded-full bg-green-500"></div>
+      <div className="absolute inset-0 opacity-5" />
+      
+      <div className="w-full max-w-2xl bg-[#0f172a] rounded-xl border border-gray-800 shadow-xl overflow-hidden z-10">
+        <div className="px-6 py-3 bg-[#1e293b] border-b border-gray-800 flex items-center">
+          <div className="flex space-x-2 mr-4">
+            <div className="w-3 h-3 rounded-full bg-red-500" />
+            <div className="w-3 h-3 rounded-full bg-yellow-500" />
+            <div className="w-3 h-3 rounded-full bg-green-500" />
+          </div>
+          <div className="font-mono text-sm text-gray-400">algorithm.js</div>
+        </div>
+        
+        <div className="p-6 font-mono text-sm bg-[#0f172a]">
+          {displayedCode.split('\n').map((line, i) => (
+            <div key={i} className="flex mb-1">
+              <span className="text-gray-600 mr-4 w-8 text-right">{i + 1}</span>
+              <span className="text-gray-300">
+                {line}
+                {i === displayedCode.split('\n').length - 1 && (
+                  <span 
+                    ref={cursorRef}
+                    className={`inline-block w-2 h-5 ml-1 bg-blue-400 ${cursorVisible ? 'opacity-100' : 'opacity-0'}`}
+                  />
+                )}
+              </span>
             </div>
-            <div className="text-xs font-mono opacity-70">problem.js</div>
-          </div>
-
-          {/* Code content */}
-          <div className="p-4 font-mono text-xs sm:text-sm overflow-hidden relative h-64">
-            <pre className="whitespace-pre-wrap text-green-400 transition-opacity duration-1000">
-              {codeSnippets[activeIndex]}
-            </pre>
-
-            {/* Blinking cursor */}
-            <div className="absolute bottom-4 right-4 w-2 h-4 bg-white animate-blink"></div>
-          </div>
+          ))}
         </div>
-
-        {/* Logo */}
-        <div className="flex items-center justify-center mb-6">
-          <div className="w-12 h-12 rounded-xl bg-primary/10  flex items-center justify-center">
-            <Code className="w-6 h-6 text-blue-600/100 dark:text-sky-400/100" />
-          </div>
-        </div>
-
-        {/* Text content */}
-        <h2 className="text-2xl font-bold mb-4 text-center">{title}</h2>
-        <p className="text-slate-300 text-center">{subtitle}</p>
       </div>
     </div>
   );

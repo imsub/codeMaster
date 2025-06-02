@@ -57,6 +57,7 @@ export class AuthController {
 
   @LogDecorator.LogMethod()
   async login(req: Request, res: Response) {
+    const start = performance.now();
     const {email, password} = req.body;
     const _userInfo = await this.authService.getUserByEmail(email);
     if (!_userInfo?.email) {
@@ -88,9 +89,10 @@ export class AuthController {
       sameSite: "strict",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
     });
-
-    (res as Response).sendResponse(
-      {id: _userInfo.id, email: _userInfo.email},
+    const end = performance.now();
+    console.log("Login took:", end - start, "ms");
+    res.sendResponse(
+      {id: _userInfo.id, email: _userInfo.email , performance:`${end - start} "ms"`},
       "User Logged in successfully",
       200
     );

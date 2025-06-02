@@ -1,6 +1,6 @@
 // Define the structure of the cache entry
 interface CacheEntry {
-  value: any; // Using `any` for flexibility; you can replace with a specific type if known
+  value: string | symbol | unknown; // Using `any` for flexibility; you can replace with a specific type if known
   lastModified: number;
   tags: string[];
 }
@@ -13,7 +13,7 @@ interface CacheContext {
 // Define the options type for the constructor
 interface CacheHandlerOptions {
   // Add specific option properties if known, e.g., cacheDuration?: number;
-  [key: string]: any; // Flexible options object
+  [key: string]: string | symbol; // Flexible options object
 }
 
 const cache = new Map<string, CacheEntry>();
@@ -30,7 +30,7 @@ export class CacheHandler {
     return cache.get(key);
   }
 
-  async set(key: string, data: any, ctx: CacheContext): Promise<void> {
+  async set(key: string, data: unknown, ctx: CacheContext): Promise<void> {
     // Store in cache with metadata
     cache.set(key, {
       value: data,

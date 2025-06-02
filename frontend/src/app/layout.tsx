@@ -1,3 +1,4 @@
+import React from "react";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -61,23 +62,22 @@ export const metadata: Metadata = {
   //   width: "device-width",
   //   initialScale: 1,
   //   maximumScale: 1,
-  //   userScalable: "no",
   // },
   // robots: {
   //   index: true,
   //   follow: true,
-  //   maxSnippet: -1,
-  //   maxImagePreview: "large",
-  //   maxVideoPreview: -1,
+  //   // maxSnippet: -1,
+  //   // maxImagePreview: "large",
+  //   // maxVideoPreview: -1,
   //   noarchive: true,
   //   nosnippet: false,
   //   notranslate: false,
   //   noimageindex: false,
   //   // noindex: false,
   //   // nofollow: false,
-  //   noydir: false,
-  //   noarchive: false,
-  //   noimageindex: false,
+  //   // noydir: false,
+  //   // noarchive: false,
+  //   // noimageindex: false,
   // }
 };
 
@@ -89,6 +89,9 @@ export default function RootLayout({
   return (
     <>
       <html lang="en" suppressHydrationWarning>
+        {/* <head>
+          <link rel="manifest" href="../../public/manifest.json" />
+        </head> */}
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
