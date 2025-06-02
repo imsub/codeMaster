@@ -18,10 +18,8 @@ import Editor from "react-simple-code-editor";
 import "prismjs"; // Core first
 import "prismjs/components/prism-python";
 import "prismjs/components/prism-java";
-import "prismjs/components/prism-c.js"; // C++ after core
-import "prismjs/components/prism-javascript"; // Added
-import "prismjs/components/prism-jsx";        // Recommended for modern JS
-import { highlight, languages } from "prismjs";
+import "prismjs/components/prism-javascript"; 
+import "prismjs/components/prism-jsx";        
 console.log(languages)
 import "prismjs/themes/prism-tomorrow.css";
 import { useMemo } from "react";
