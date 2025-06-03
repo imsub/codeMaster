@@ -17,6 +17,7 @@
     "@emotion/styled": "^11.14.0",
     "@heroicons/react": "^2.2.0",
     "@hookform/resolvers": "^5.0.1",
+    "@monaco-editor/react": "^4.7.0",
     "@mui/material": "^7.1.0",
     "@mui/x-data-grid": "^8.4.0",
     "@mui/x-data-grid-generator": "^8.4.0",

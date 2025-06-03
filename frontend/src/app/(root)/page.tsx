@@ -18,9 +18,8 @@ import Editor from "react-simple-code-editor";
 import "prismjs"; // Core first
 import "prismjs/components/prism-python";
 import "prismjs/components/prism-java";
-import "prismjs/components/prism-javascript"; 
-import "prismjs/components/prism-jsx";        
-console.log(languages)
+import "prismjs/components/prism-javascript"; // Added
+import { highlight, languages } from "prismjs";
 import "prismjs/themes/prism-tomorrow.css";
 import { useMemo } from "react";
 interface Code  {
@@ -33,7 +32,7 @@ const LandingPage = () => {
   const [darkMode, setDarkMode] = useState(true);
   const [activeLanguage, setActiveLanguage] = useState("python");
   const [code, setCode] = useState("");
-  const [isScrolled, setIsScrolled] = useState(false);
+  // const [isScrolled, setIsScrolled] = useState(false);
 
   const codeSnippets: Code = useMemo(
     () => ({
@@ -53,22 +52,22 @@ const LandingPage = () => {
   }, [activeLanguage, codeSnippets]);
 
   // Scroll listener for navbar
-  useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 10);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  // useEffect(() => {
+  //   const handleScroll = () => setIsScrolled(window.scrollY > 10);
+  //   window.addEventListener("scroll", handleScroll);
+  //   return () => window.removeEventListener("scroll", handleScroll);
+  // }, []);
 
   const features = [
     {
       icon: <FaCode className="text-3xl" />,
       title: "Multi-Language",
-      description: "Python, Java, C++ with syntax highlighting",
+      description: "Python, Java, Javascript with syntax highlighting",
     },
     {
       icon: <div className="text-3xl">📊</div>,
-      title: "500+ Problems",
-      description: "Curated by ex-FAANG engineers",
+      title: "30+ Problems",
+      description: "Curated by Chai Code Student",
     },
     {
       icon: <div className="text-3xl">⚡</div>,
@@ -85,13 +84,7 @@ const LandingPage = () => {
     >
       {/* Navbar */}
       <nav
-        className={`w-full z-50 transition-all ${
-          isScrolled
-            ? darkMode
-              ? "bg-gray-800/90 backdrop-blur"
-              : "bg-white/90 backdrop-blur"
-            : "bg-transparent"
-        } py-4`}
+        className={`w-full transition-all py-4`}
       >
         <div className="container mx-auto px-6 flex justify-between items-center">
           <motion.div
@@ -399,7 +392,7 @@ const LandingPage = () => {
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-6 md:mb-0">
               <span className="text-2xl font-bold bg-gradient-to-r from-teal-400 to-blue-500 bg-clip-text text-transparent">
-                DSArena
+                Code Duster
               </span>
               <p
                 className={`mt-2 ${
