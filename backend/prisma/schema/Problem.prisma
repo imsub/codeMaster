@@ -15,7 +15,7 @@ model Problem {
   constraints String
   hints       String?
   editorial   String?
-
+  company     String[]
   testCases          Json // 
   codeSnippet       Json
   referenceSolution Json

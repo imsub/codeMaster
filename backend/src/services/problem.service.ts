@@ -24,6 +24,9 @@ export class ProblemService {
       where: {
         userId: id,
       },
+      include: {
+        submission: true,
+      },
     });
     if (!problems) throw new CustomError("No problems found", 404);
     // await this.cacheManager.setCache(
